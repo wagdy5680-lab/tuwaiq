@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عرض بيانات Aiven PostgreSQL</title>
-    <!-- FontAwesome للأيقونات -->
+    <title>جمعية طويق لصناعة الكوادر البشرية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -118,7 +117,6 @@
             background-color: #f1f8f8;
         }
 
-        /* تنسيق متجاوب للشاشات الصغيرة */
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -131,7 +129,7 @@
 
 <div class="container">
     <div class="header">
-        <h1><i class="fa-solid font-awesome-logo-full"></i> عرض بيانات الشركات (Aiven PostgreSQL)</h1>
+        <h1>عرض بيانات الشركات (Aiven PostgreSQL)</h1>
         <div class="controls">
             <span class="record-count" id="recordCount">&#128196; جاري التحميل...</span>
             <button class="btn-refresh" onclick="fetchDataFromAiven()">
@@ -162,41 +160,37 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- يتم استبدال المحتوى بالبيانات المجلوبة تلقائياً -->
             </tbody>
         </table>
     </div>
 </div>
 
 <script>
-// دالة الاستدعاء من Aiven PostgreSQL عبر Vercel Serverless API
 async function fetchDataFromAiven() {
     const refreshIcon = document.getElementById('refreshIcon');
     try {
         if (refreshIcon) refreshIcon.classList.add('fa-spin');
 
-        // طلب البيانات الحديثة من الـ Endpoint
         const response = await fetch('/api/get-data');
-        if (!response.ok) throw new Error('فشل جلب البيانات من السيرفر');
-
         const data = await response.json();
         
-        // إعادة بناء أسطر الجدول بالبيانات المجلوبة
+        if (!response.ok) {
+            throw new Error(data.details || data.error || 'فشل جلب البيانات من السيرفر');
+        }
+
         renderTableData(data);
 
-        // تحديث عداد السجلات
         const countSpan = document.getElementById('recordCount');
         if (countSpan) countSpan.innerHTML = `&#128196; إجمالي السجلات: ${data.length}`;
 
     } catch (error) {
         console.error('خطأ أثناء التحديث:', error);
-        alert('حدث خطأ أثناء الاتصال بقاعدة بيانات Aiven على Vercel');
+        alert('تفاصيل الخطأ: ' + error.message);
     } finally {
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
     }
 }
 
-// دالة مرنة تتوافق مع الأسماء العربية والإنجليزية المرجعة من الفيو
 function renderTableData(data) {
     const tbody = document.querySelector('#dataTable tbody');
     if (!tbody) return;
@@ -205,7 +199,6 @@ function renderTableData(data) {
     data.forEach(row => {
         const keys = Object.keys(row);
         
-        // دالة مساعدة للحصول على قيمة الحقل بغض النظر عن لغة التسمية أو الترتيب
         const val = (...possibleKeys) => {
             for (let k of possibleKeys) {
                 if (row[k] !== undefined && row[k] !== null) return row[k];
@@ -235,7 +228,6 @@ function renderTableData(data) {
     });
 }
 
-// تشغيل جلب البيانات تلقائياً عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', () => {
     fetchDataFromAiven();
 });
