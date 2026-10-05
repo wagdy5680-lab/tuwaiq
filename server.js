@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const path = require('path');
 const app = express();
 
-// إعداد الاتصال بـ Aiven PostgreSQL عبر DATABASE_URL أو المتغيرات المنفصلة
+// استخدام DATABASE_URL أو القيم المنفصلة تلقائياً
 const connectionString = process.env.DATABASE_URL || 
   `postgres://${process.env.AIVEN_USER}:${process.env.AIVEN_PASSWORD}@${process.env.AIVEN_HOST}:${process.env.AIVEN_PORT}/${process.env.AIVEN_DB}?sslmode=require`;
 
@@ -17,13 +17,13 @@ const pool = new Pool({
 // إتاحة الملفات الثابتة
 app.use(express.static(path.join(__dirname)));
 
-// مسار API لجلب البيانات من الفيو الصحيح
+// مسار API لجلب البيانات من الفيو المحدث
 app.get('/api/get-data', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM "public_بحث_شامل_الشركات"');
     res.json(result.rows);
   } catch (err) {
-    console.error('خطأ في الاتصال بقاعدة البيانات:', err);
+    console.error('Database Error:', err);
     res.status(500).json({ 
       error: 'تعذر جلب البيانات من Aiven', 
       details: err.message || err.toString() 
