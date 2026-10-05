@@ -1,48 +1,35 @@
 const express = require('express');
 const { Pool } = require('pg');
-const cors = require('cors');
-
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-// قراءة بيانات الاتصال من متغيرات البيئة بدلاً من كتابتها صراحة
+// إعداد الاتصال بـ Aiven PostgreSQL عبر SSL
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+  host: process.env.AIVEN_HOST,
+  port: process.env.AIVEN_PORT,
+  database: process.env.AIVEN_DB,
+  user: process.env.AIVEN_USER,
+  password: process.env.AIVEN_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false // مطلوب لاتصال SSL الآمن مع Aiven
+  }
 });
 
-pool.connect((err, client, release) => {
-    if (err) {
-        console.error('Error connecting to Aiven PostgreSQL:', err.stack);
-    } else {
-        console.log('Successfully connected to Aiven PostgreSQL database!');
-        release();
-    }
-});
+// إتاحة الملفات الثابتة (مثل index.html)
+app.use(express.static(__dirname));
 
-app.get('/api/data', async (req, res) => {
-    try {
-        const tableName = req.query.table || 'your_table_name'; 
-        const result = await pool.query(`SELECT * FROM ${tableName}`);
-        
-        res.json({
-            success: true,
-            count: result.rowCount,
-            data: result.rows
-        });
-    } catch (err) {
-        console.error('Query Error:', err.message);
-        res.status(500).json({
-            success: false,
-            error: err.message
-        });
-    }
+// مسار API لجلب البيانات من الـ View
+app.get('/api/get-data', async (req, res) => {
+  try {
+    // الاستعلام المباشر من الفيو: بحث_شامل_الشركات
+    const result = await pool.query('SELECT * FROM "بحث_شامل_الشركات"');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('خطأ في الاتصال بقاعدة البيانات:', err);
+    res.status(500).json({ error: 'تعذر جلب البيانات من Aiven' });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
