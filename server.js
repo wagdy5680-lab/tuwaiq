@@ -22,13 +22,14 @@ const pool = new Pool({
 // إتاحة الملفات الثابتة
 app.use(express.static(path.join(__dirname)));
 
-// مسار API لجلب البيانات من الفيو
+// مسار API لجلب البيانات من الفيو بتركيب Schema.View الصحيح
 app.get('/api/get-data', async (req, res) => {
   try {
     if (!process.env.DATABASE_URL) {
       throw new Error('لم يتم قراءة متغير DATABASE_URL من Vercel.');
     }
-    const result = await pool.query('SELECT * FROM "public_بحث_شامل_الشركات"');
+    // فصل الـ Schema عن اسم الـ View بنقطة
+    const result = await pool.query('SELECT * FROM "public"."بحث_شامل_الشركات"');
     res.json(result.rows);
   } catch (err) {
     console.error('Database Error:', err);
