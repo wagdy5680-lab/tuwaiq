@@ -1,9 +1,12 @@
+// تعليق فحص شهادات SSL الذاتية لبيئة Vercel
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const express = require('express');
 const { Pool } = require('pg');
 const path = require('path');
 const app = express();
 
-// معالجة رابط الاتصال وإزالة معامل sslmode لتجنب تعارض الشهادة الذاتية
+// تنظيف رابط الاتصال من أي معاملات قد تتعارض مع pg
 let connectionString = process.env.DATABASE_URL || '';
 if (connectionString.includes('?')) {
   connectionString = connectionString.split('?')[0];
