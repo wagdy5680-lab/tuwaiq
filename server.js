@@ -3,9 +3,14 @@ const { Pool } = require('pg');
 const path = require('path');
 const app = express();
 
-// إعداد الاتصال باستخدام DATABASE_URL بشكل مباشر
+// معالجة رابط الاتصال وإزالة معامل sslmode لتجنب تعارض الشهادة الذاتية
+let connectionString = process.env.DATABASE_URL || '';
+if (connectionString.includes('?')) {
+  connectionString = connectionString.split('?')[0];
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: connectionString,
   ssl: {
     rejectUnauthorized: false
   }
@@ -18,7 +23,7 @@ app.use(express.static(path.join(__dirname)));
 app.get('/api/get-data', async (req, res) => {
   try {
     if (!process.env.DATABASE_URL) {
-      throw new Error('متغير البيئة DATABASE_URL غير مضاف في لوحة تحكم Vercel');
+      throw new Error('لم يتم قراءة متغير DATABASE_URL من Vercel.');
     }
     const result = await pool.query('SELECT * FROM "public_بحث_شامل_الشركات"');
     res.json(result.rows);
