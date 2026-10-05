@@ -3,12 +3,9 @@ const { Pool } = require('pg');
 const path = require('path');
 const app = express();
 
-// استخدام DATABASE_URL أو القيم المنفصلة تلقائياً
-const connectionString = process.env.DATABASE_URL || 
-  `postgres://${process.env.AIVEN_USER}:${process.env.AIVEN_PASSWORD}@${process.env.AIVEN_HOST}:${process.env.AIVEN_PORT}/${process.env.AIVEN_DB}?sslmode=require`;
-
+// إعداد الاتصال باستخدام DATABASE_URL بشكل مباشر
 const pool = new Pool({
-  connectionString: connectionString,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
@@ -17,9 +14,12 @@ const pool = new Pool({
 // إتاحة الملفات الثابتة
 app.use(express.static(path.join(__dirname)));
 
-// مسار API لجلب البيانات من الفيو المحدث
+// مسار API لجلب البيانات من الفيو
 app.get('/api/get-data', async (req, res) => {
   try {
+    if (!process.env.DATABASE_URL) {
+      throw new Error('متغير البيئة DATABASE_URL غير مضاف في لوحة تحكم Vercel');
+    }
     const result = await pool.query('SELECT * FROM "public_بحث_شامل_الشركات"');
     res.json(result.rows);
   } catch (err) {
