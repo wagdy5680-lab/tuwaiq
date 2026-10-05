@@ -54,6 +54,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .record-count {
@@ -65,14 +66,24 @@
             font-size: 0.9rem;
         }
 
+        select, .btn-refresh {
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        select {
+            background-color: white;
+            cursor: pointer;
+        }
+
         .btn-refresh {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.95rem;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -116,24 +127,21 @@
         tbody tr:hover {
             background-color: #f1f8f8;
         }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>عرض بيانات الشركات (Aiven PostgreSQL)</h1>
+        <h1>عرض بيانات قاعدة البيانات (Aiven PostgreSQL)</h1>
         <div class="controls">
-            <span class="record-count" id="recordCount">&#128196; جاري التحميل...</span>
+            <!-- قائمة منسدلة لاختيار الجدول أو الـ View -->
+            <select id="tableSelect" onchange="fetchDataFromAiven()">
+                <option value="">-- اختر الجدول أو الـ View --</option>
+            </select>
+            <span class="record-count" id="recordCount">&#128196; اختر جدولاً...</span>
             <button class="btn-refresh" onclick="fetchDataFromAiven()">
-                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث من Aiven
+                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث
             </button>
         </div>
     </div>
@@ -141,44 +149,64 @@
     <div class="table-responsive">
         <table id="dataTable">
             <thead>
-                <tr>
-                    <th>الاسم رباعياً</th>
-                    <th>تاريخ البداء</th>
-                    <th>الراتب الشهري</th>
-                    <th>الحالة الوظيفية</th>
-                    <th>عدد الأيام</th>
-                    <th>إجمالي الراتب حتى اليوم</th>
-                    <th>تاريخ النهاية</th>
-                    <th>اسم الشركة</th>
-                    <th>رقم السجل المدني</th>
-                    <th>الجهه المكلف به حالياً</th>
-                    <th>الحالة الانسانية</th>
-                    <th>ملاحظة جهة الاحالة</th>
-                    <th>وسيلة الاتصال (جوال)</th>
-                    <th>المؤهل العلمي</th>
-                    <th>الوظيفة</th>
+                <tr id="tableHeaders">
+                    <th>البيانات ستظهر هنا...</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tableBody">
             </tbody>
         </table>
     </div>
 </div>
 
 <script>
+// جلب قائمة الجداول والفيوز عند تحميل الصفحة وتعبئتها في القائمة المنسدلة
+async function loadTablesList() {
+    try {
+        const response = await fetch('/api/tables');
+        const tables = await response.json();
+        
+        const select = document.getElementById('tableSelect');
+        select.innerHTML = '<option value="">-- اختر الجدول أو الـ View --</option>';
+        
+        tables.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.table_name;
+            opt.textContent = `${t.table_name} (${t.table_type})`;
+            // تحديد الـ View الخاص بك افتراضياً إن وجد
+            if (t.table_name.includes('بحث_شامل_الشركات')) {
+                opt.selected = true;
+            }
+            select.appendChild(opt);
+        });
+
+        // إذا تم اختيار شيء افتراضياً، جلب بياناته
+        if (select.value) {
+            fetchDataFromAiven();
+        }
+    } catch (err) {
+        console.error('خطأ في جلب قائمة الجداول:', err);
+    }
+}
+
+// جلب بيانات الجدول أو الـ View المختار
 async function fetchDataFromAiven() {
+    const select = document.getElementById('tableSelect');
+    const tableName = select.value;
+    if (!tableName) return;
+
     const refreshIcon = document.getElementById('refreshIcon');
     try {
         if (refreshIcon) refreshIcon.classList.add('fa-spin');
 
-        const response = await fetch('/api/get-data');
+        const response = await fetch(`/api/get-data?name=${encodeURIComponent(tableName)}`);
         const data = await response.json();
         
         if (!response.ok) {
-            throw new Error(data.details || data.error || 'فشل جلب البيانات من السيرفر');
+            throw new Error(data.details || data.error || 'فشل جلب البيانات');
         }
 
-        renderTableData(data);
+        renderDynamicTable(data);
 
         const countSpan = document.getElementById('recordCount');
         if (countSpan) countSpan.innerHTML = `&#128196; إجمالي السجلات: ${data.length}`;
@@ -191,45 +219,43 @@ async function fetchDataFromAiven() {
     }
 }
 
-function renderTableData(data) {
-    const tbody = document.querySelector('#dataTable tbody');
-    if (!tbody) return;
+// رسم الجدول مرناً حسب أعمدة الجدول المختار
+function renderDynamicTable(data) {
+    const theadTr = document.getElementById('tableHeaders');
+    const tbody = document.getElementById('tableBody');
+    
+    theadTr.innerHTML = '';
     tbody.innerHTML = '';
 
-    data.forEach(row => {
-        const keys = Object.keys(row);
-        
-        const val = (...possibleKeys) => {
-            for (let k of possibleKeys) {
-                if (row[k] !== undefined && row[k] !== null) return row[k];
-            }
-            return '';
-        };
+    if (!data || data.length === 0) {
+        theadTr.innerHTML = '<th>لا توجد بيانات في هذا الجدول</th>';
+        return;
+    }
 
+    const columns = Object.keys(data[0]);
+
+    // إنشاء ترويسة الأعمدة
+    columns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        theadTr.appendChild(th);
+    });
+
+    // إنشاء الصفوف
+    data.forEach(row => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td class="col-idx-0" data-label="الاسم رباعياً">${val('الاسم رباعياً', 'full_name', keys[0])}</td>
-            <td class="col-idx-1" data-label="تاريخ البداء">${val('تاريخ البداء', 'start_date', keys[1])}</td>
-            <td class="col-idx-2" data-label="الراتب الشهري">${val('الراتب الشهري', 'monthly_salary', keys[2])}</td>
-            <td class="col-idx-3" data-label="الحالة الوظيفية">${val('الحالة الوظيفية', 'job_status', keys[3])}</td>
-            <td class="col-idx-4" data-label="عدد الأيام">${val('عدد الأيام', 'days_count', keys[4])}</td>
-            <td class="col-idx-5" data-label="إجمالي الراتب حتى اليوم">${val('إجمالي الراتب حتى اليوم', 'total_salary', keys[5])}</td>
-            <td class="col-idx-6" data-label="تاريخ النهاية">${val('تاريخ النهاية', 'end_date', keys[6])}</td>
-            <td class="col-idx-7" data-label="اسم الشركة">${val('اسم الشركة', 'company_name', keys[7])}</td>
-            <td class="col-idx-8" data-label="رقم السجل المدني">${val('رقم السجل المدني', 'national_id', keys[8])}</td>
-            <td class="col-idx-9" data-label="الجهه المكلف به حالياً">${val('الجهه المكلف به حالياً', 'assigned_to', keys[9])}</td>
-            <td class="col-idx-10" data-label="الحالة الانسانية">${val('الحالة الانسانية', 'humanitarian_status', keys[10])}</td>
-            <td class="col-idx-11" data-label="ملاحظة جهة الاحالة">${val('ملاحظة جهة الاحالة', 'referral_notes', keys[11])}</td>
-            <td class="col-idx-12" data-label="وسيلة الاتصال (جوال)">${val('وسيلة الاتصال (جوال)', 'phone', keys[12])}</td>
-            <td class="col-idx-13" data-label="المؤهل العلمي">${val('المؤهل العلمي', 'education', keys[13])}</td>
-            <td class="col-idx-14" data-label="الوظيفة">${val('الوظيفة', 'job_title', keys[14])}</td>
-        `;
+        columns.forEach(col => {
+            const td = document.createElement('td');
+            td.textContent = row[col] !== null && row[col] !== undefined ? row[col] : '';
+            tr.appendChild(td);
+        });
         tbody.appendChild(tr);
     });
 }
 
+// تحميل القائمة تلقائياً عند فتح الصفحة
 document.addEventListener('DOMContentLoaded', () => {
-    fetchDataFromAiven();
+    loadTablesList();
 });
 </script>
 
