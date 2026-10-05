@@ -3,103 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جمعية طويق لصناعة الكوادر البشرية</title>
+    <title>جمعية طويق لصناعة الكوادر البشرية - لوحة التحكم المالية</title>
+    <!-- خط Cairo العصري -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #008080;
-            --primary-hover: #005f5f;
-            --bg-color: #f4f6f8;
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --accent: #2dd4bf;
+            --bg-main: #f8fafc;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #e0e0e0;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            direction: rtl;
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 30px 20px;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 0 auto;
             background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
         }
 
+        /* الهيدر العصري */
         .header {
+            background: linear-gradient(135deg, #0f766e, #115e59);
+            color: white;
+            padding: 25px 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-        }
-
-        .controls {
+        .brand-section {
             display: flex;
             align-items: center;
             gap: 15px;
+        }
+
+        .brand-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            backdrop-filter: blur(5px);
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        /* أدوات التحكم والفلترة */
+        .controls-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
-        .record-count {
-            font-weight: bold;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        select, .btn-refresh {
-            padding: 10px 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            font-size: 0.95rem;
-            outline: none;
-        }
-
-        select {
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .btn-refresh {
-            background-color: var(--primary-color);
+        .select-box, .search-box input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .select-box option {
+            background: var(--text-main);
+            color: white;
+        }
+
+        .select-box:focus, .search-box input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--accent);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding-right: 40px;
+            width: 220px;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
+        }
+
+        .btn-action {
+            background: white;
+            color: var(--primary);
             border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: background-color 0.2s ease;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            font-family: 'Cairo', sans-serif;
         }
 
-        .btn-refresh:hover {
-            background-color: var(--primary-hover);
+        .btn-action:hover {
+            background: #f1f5f9;
+            transform: translateY(-1px);
         }
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+        /* شريط المعلومات السفلي للهيدر */
+        .sub-header {
+            background: #f1f5f9;
+            padding: 12px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .record-badge {
+            background: #ccfbf1;
+            color: #0f766e;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* منطقة الجدول */
+        .table-container {
+            flex: 1;
+            overflow: auto;
+            position: relative;
+            background: white;
         }
 
         table {
@@ -109,58 +195,122 @@
             font-size: 0.88rem;
         }
 
-        th, td {
-            padding: 12px 10px;
-            text-align: right;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background-color: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
+        thead {
             position: sticky;
             top: 0;
             z-index: 10;
         }
 
+        th {
+            background: #f8fafc;
+            color: var(--text-sub);
+            font-weight: 700;
+            padding: 14px 18px;
+            text-align: right;
+            border-bottom: 2px solid var(--border);
+            border-left: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        tbody tr {
+            transition: background 0.15s;
+        }
+
         tbody tr:hover {
-            background-color: #f1f8f8;
+            background-color: #f0fdfa;
+        }
+
+        /* حالة التحميل أو الفراغ */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: var(--text-sub);
+            font-size: 1.1rem;
+        }
+
+        /* تجاوب الشاشات الصغيرة */
+        @media (max-width: 900px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .controls-wrapper {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .search-box input {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- الهيدر الرئيسي -->
     <div class="header">
-        <h1>عرض بيانات قاعدة البيانات (Aiven PostgreSQL)</h1>
-        <div class="controls">
-            <!-- قائمة منسدلة لاختيار الجدول أو الـ View -->
-            <select id="tableSelect" onchange="fetchDataFromAiven()">
+        <div class="brand-section">
+            <div class="brand-icon">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <div>
+                <h1>جمعية طويق لصناعة الكوادر البشرية</h1>
+                <p>نظام استعلام قواعد البيانات والتقارير المالية المباشرة</p>
+            </div>
+        </div>
+
+        <div class="controls-wrapper">
+            <!-- قائمة الجداول -->
+            <select id="tableSelect" class="select-box" onchange="fetchDataFromAiven()">
                 <option value="">-- اختر الجدول أو الـ View --</option>
             </select>
-            <span class="record-count" id="recordCount">&#128196; اختر جدولاً...</span>
-            <button class="btn-refresh" onclick="fetchDataFromAiven()">
-                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث
+
+            <!-- زر التحديث -->
+            <button class="btn-action" onclick="fetchDataFromAiven()">
+                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث البيانات
             </button>
         </div>
     </div>
 
-    <div class="table-responsive">
+    <!-- شريط معلومات فرعي -->
+    <div class="sub-header">
+        <div class="record-badge" id="recordCount">
+            <i class="fa-solid fa-database"></i> جاري الاتصال بقاعدة البيانات...
+        </div>
+        <!-- حقل البحث الفوري -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="بحث سريع في الجدول..." onkeyup="filterTable()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+    </div>
+
+    <!-- الجدول -->
+    <div class="table-container">
         <table id="dataTable">
             <thead>
                 <tr id="tableHeaders">
-                    <th>البيانات ستظهر هنا...</th>
+                    <th>الرجاء اختيار جدول من القائمة بالأعلى...</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
+                <tr>
+                    <td colspan="100" class="empty-state">اختر جدولاً أو عرضاً (View) لعرض البيانات المرتبطة به.</td>
+                </tr>
             </tbody>
         </table>
     </div>
 </div>
 
 <script>
-// جلب قائمة الجداول والفيوز عند تحميل الصفحة وتعبئتها في القائمة المنسدلة
+let globalData = [];
+
+// تحميل قائمة الجداول والفيوز عند فتح الصفحة
 async function loadTablesList() {
     try {
         const response = await fetch('/api/tables');
@@ -173,14 +323,14 @@ async function loadTablesList() {
             const opt = document.createElement('option');
             opt.value = t.table_name;
             opt.textContent = `${t.table_name} (${t.table_type})`;
-            // تحديد الـ View الخاص بك افتراضياً إن وجد
+            
+            // اختيار الفيو المخصص افتراضياً
             if (t.table_name.includes('بحث_شامل_الشركات')) {
                 opt.selected = true;
             }
             select.appendChild(opt);
         });
 
-        // إذا تم اختيار شيء افتراضياً، جلب بياناته
         if (select.value) {
             fetchDataFromAiven();
         }
@@ -189,7 +339,7 @@ async function loadTablesList() {
     }
 }
 
-// جلب بيانات الجدول أو الـ View المختار
+// جلب البيانات بناءً على الجدول المختار
 async function fetchDataFromAiven() {
     const select = document.getElementById('tableSelect');
     const tableName = select.value;
@@ -206,10 +356,13 @@ async function fetchDataFromAiven() {
             throw new Error(data.details || data.error || 'فشل جلب البيانات');
         }
 
+        globalData = data;
         renderDynamicTable(data);
 
-        const countSpan = document.getElementById('recordCount');
-        if (countSpan) countSpan.innerHTML = `&#128196; إجمالي السجلات: ${data.length}`;
+        const countBadge = document.getElementById('recordCount');
+        if (countBadge) {
+            countBadge.innerHTML = `<i class="fa-solid fa-database"></i> إجمالي السجلات: ${data.length.toLocaleString()}`;
+        }
 
     } catch (error) {
         console.error('خطأ أثناء التحديث:', error);
@@ -219,7 +372,7 @@ async function fetchDataFromAiven() {
     }
 }
 
-// رسم الجدول مرناً حسب أعمدة الجدول المختار
+// رسم الجدول بمرونة تامة
 function renderDynamicTable(data) {
     const theadTr = document.getElementById('tableHeaders');
     const tbody = document.getElementById('tableBody');
@@ -228,32 +381,64 @@ function renderDynamicTable(data) {
     tbody.innerHTML = '';
 
     if (!data || data.length === 0) {
-        theadTr.innerHTML = '<th>لا توجد بيانات في هذا الجدول</th>';
+        theadTr.innerHTML = '<th>تنبيه</th>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد سجلات مسجلة في هذا الجدول حالياً.</td></tr>';
         return;
     }
 
     const columns = Object.keys(data[0]);
 
-    // إنشاء ترويسة الأعمدة
+    // ترويسة الأعمدة
     columns.forEach(col => {
         const th = document.createElement('th');
         th.textContent = col;
         theadTr.appendChild(th);
     });
 
-    // إنشاء الصفوف
+    // تعبئة الصفوف
+    populateRows(data, columns);
+}
+
+function populateRows(data, columns) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة للبحث.</td></tr>';
+        return;
+    }
+
     data.forEach(row => {
         const tr = document.createElement('tr');
         columns.forEach(col => {
             const td = document.createElement('td');
-            td.textContent = row[col] !== null && row[col] !== undefined ? row[col] : '';
+            const val = row[col];
+            td.textContent = val !== null && val !== undefined ? val : '';
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
     });
 }
 
-// تحميل القائمة تلقائياً عند فتح الصفحة
+// البحث الفوري في الجدول
+function filterTable() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    if (!globalData.length) return;
+
+    const filtered = globalData.filter(row => {
+        return Object.values(row).some(val => 
+            String(val).toLowerCase().includes(query)
+        );
+    });
+
+    const columns = Object.keys(globalData[0]);
+    populateRows(filtered, columns);
+
+    const countBadge = document.getElementById('recordCount');
+    countBadge.innerHTML = `<i class="fa-solid fa-database"></i> النتائج المعروضة: ${filtered.length.toLocaleString()} من ${globalData.length.toLocaleString()}`;
+}
+
+// بدء التشغيل
 document.addEventListener('DOMContentLoaded', () => {
     loadTablesList();
 });
