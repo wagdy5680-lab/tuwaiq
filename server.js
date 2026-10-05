@@ -3,13 +3,12 @@ const { Pool } = require('pg');
 const path = require('path');
 const app = express();
 
-// إعداد الاتصال بـ Aiven PostgreSQL عبر SSL
+// إعداد الاتصال بـ Aiven PostgreSQL
+const connectionString = process.env.DATABASE_URL || 
+  `postgres://${process.env.AIVEN_USER}:${process.env.AIVEN_PASSWORD}@${process.env.AIVEN_HOST}:${process.env.AIVEN_PORT}/${process.env.AIVEN_DB}?sslmode=require`;
+
 const pool = new Pool({
-  host: process.env.AIVEN_HOST,
-  port: process.env.AIVEN_PORT,
-  database: process.env.AIVEN_DB,
-  user: process.env.AIVEN_USER,
-  password: process.env.AIVEN_PASSWORD,
+  connectionString: connectionString,
   ssl: {
     rejectUnauthorized: false
   }
@@ -25,7 +24,7 @@ app.get('/api/get-data', async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error('خطأ في الاتصال بقاعدة البيانات:', err);
-    res.status(500).json({ error: 'تعذر جلب البيانات من Aiven' });
+    res.status(500).json({ error: 'تعذر جلب البيانات من Aiven', details: err.message });
   }
 });
 
