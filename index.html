@@ -1,0 +1,227 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>جمعية طويق لصناعة الكوادر البشرية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#f1f5f9;--card:#fff;--text:#0f172a;--sub:#64748b;--primary:#2563eb;--border:#e2e8f0;--soft:#f8fafc;--hover:#eff6ff;--sum:#eff6ff}
+[data-theme=dark]{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--sub:#94a3b8;--primary:#3b82f6;--border:#334155;--soft:#0f172a;--hover:#334155;--sum:#172554}
+*{box-sizing:border-box}
+body{margin:0;padding:15px;font-family:'Cairo',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+button,input,select{font-family:inherit}
+.header{background:linear-gradient(135deg,#2563eb,#0284c7);color:#fff;border-radius:15px;padding:18px;margin-bottom:15px}
+.header-main{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{font-size:38px}
+.brand h1{margin:0;font-size:21px;font-weight:800}
+.brand p{margin:2px 0 0;font-size:13px;opacity:.9}
+.theme-btn{width:42px;height:42px;border:0;border-radius:10px;background:rgba(255,255,255,.18);color:#fff;font-size:21px;cursor:pointer}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.stat{padding:6px 12px;background:rgba(255,255,255,.18);border-radius:20px;font-size:12px}
+.toolbar{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--border);padding:12px;border-radius:14px;margin-bottom:15px}
+.search-box{position:relative;flex:1}
+.search-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);opacity:.6}
+#globalSearch{width:100%;padding:11px 40px;border:2px solid var(--border);border-radius:10px;background:var(--soft);color:var(--text);outline:none;font-size:14px}
+#globalSearch:focus{border-color:var(--primary)}
+.clear-search{display:none;position:absolute;left:8px;top:50%;transform:translateY(-50%);border:0;border-radius:50%;width:27px;height:27px;cursor:pointer;background:var(--border);color:var(--text)}
+.clear-search.show{display:block}
+.actions{display:flex;gap:7px}
+.action-btn{border:1px solid var(--border);background:var(--soft);color:var(--text);padding:9px 12px;border-radius:9px;cursor:pointer;font-weight:700;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.action-btn:hover{background:var(--hover)}
+.action-btn span{margin-right:2px}
+.table-wrapper{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:auto;max-height:72vh}
+table{border-collapse:collapse;width:100%;font-size:13px}
+thead{position:sticky;top:0;z-index:10}
+th{background:#2563eb;color:#fff;padding:12px;text-align:right;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;text-align:right}
+tbody tr:nth-child(even){background:var(--soft)}
+tbody tr:hover{background:var(--hover)}
+tfoot{position:sticky;bottom:0}
+tfoot td{background:#1d4ed8;color:#fff;font-weight:800;border:0}
+.col-hidden{display:none!important}
+.no-result{display:none;padding:25px;text-align:center;background:var(--card);color:#ef4444;font-weight:700;border-radius:14px;margin-top:12px;border:2px dashed #ef4444}
+.no-result.show{display:block}
+.sheet{position:fixed;inset:0;z-index:999;opacity:0;pointer-events:none;transition:.25s}
+.sheet.open{opacity:1;pointer-events:auto}
+.sheet-back{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.sheet-panel{position:absolute;right:0;top:0;height:100%;width:430px;max-width:95%;background:var(--card);display:flex;flex-direction:column;box-shadow:0 0 30px rgba(0,0,0,.3);transform:translateX(100%);transition:.3s}
+.sheet.open .sheet-panel{transform:translateX(0)}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border)}
+.sheet-head h3{margin:0;font-size:17px}
+.close-btn{width:34px;height:34px;border:0;border-radius:50%;background:var(--soft);cursor:pointer;color:var(--text)}
+.sheet-body{padding:18px;overflow:auto;flex:1}
+.section{margin-bottom:22px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.section-head h4{margin:0;font-size:14px}
+.mini-buttons{display:flex;gap:5px}
+.mini-buttons button{border:1px solid var(--border);background:var(--soft);padding:4px 8px;border-radius:6px;cursor:pointer;color:var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--soft);font-size:12px;cursor:pointer}
+.sum-chip{background:var(--sum)}
+.filters{display:grid;grid-template-columns:1fr;gap:10px}
+.filter-item{display:flex;flex-direction:column;gap:4px}
+.filter-item label{font-size:11px;font-weight:700;color:var(--sub)}
+.column-filter{padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text)}
+.sheet-footer{padding:14px 18px;border-top:1px solid var(--border)}
+.apply-btn{width:100%;padding:11px;background:var(--primary);color:#fff;border:0;border-radius:9px;font-weight:800;cursor:pointer}
+.footer{margin-top:15px;padding:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;text-align:center;font-size:12px;color:var(--sub)}
+.footer a{margin-right:12px;color:var(--primary);text-decoration:none}
+@media(max-width:800px){body{padding:8px}.toolbar{flex-direction:column;align-items:stretch}.actions{display:grid;grid-template-columns:repeat(3,1fr)}.action-btn{padding:8px 3px;font-size:11px}.action-btn span{display:block;margin:2px 0 0}.brand h1{font-size:16px}}
+@media print{body{background:#fff;padding:0}.toolbar,.sheet,.theme-btn,.actions{display:none!important}.table-wrapper{max-height:none;overflow:visible;border:0}th{background:#e2e8f0!important;color:#000!important;border:1px solid #999}td{border:1px solid #999}tfoot td{background:#e2e8f0!important;color:#000!important;border:1px solid #999}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="header-main">
+<div class="brand">
+<div class="logo">&#128202;</div>
+<div>
+<h1>جمعية طويق لصناعة الكوادر البشرية</h1>
+<p>تقرير المالية والتداولات</p>
+</div></div>
+<button class="theme-btn" onclick="toggleTheme()">&#9788;</button>
+</div>
+<div class="stats">
+<span class="stat" id="recordCount">&#128196; إجمالي السجلات: 4094</span>
+</div>
+</header>
+<div class="toolbar">
+<div class="search-box">
+<span class="search-icon">&#128269;</span>
+<input type="search" id="globalSearch" placeholder="ابحث في جميع الحقول..." oninput="debSearch()" autocomplete="off">
+<button id="clearSearch" class="clear-search" onclick="clearSearch()">&#10005;</button>
+</div>
+<div class="actions">
+<button class="action-btn" onclick="fetchDataFromAiven()">
+    <i class="fas fa-sync-alt" id="refreshIcon"></i><span>تحديث من Aiven</span>
+</button>
+<button class="action-btn" onclick="toggleSheet()">&#9881;<span>الفلاتر</span></button>
+<button class="action-btn" onclick="window.print()">&#128424;<span>طباعة</span></button>
+<button class="action-btn" onclick="exportExcel()">&#128202;<span>Excel</span></button>
+<button class="action-btn" onclick="saveHTML()">&#128190;<span>حفظ HTML</span></button>
+<button class="action-btn" onclick="resetAll()">&#8635;<span>ضبط</span></button>
+</div></div>
+
+<div id="sheet" class="sheet">
+<div class="sheet-back" onclick="toggleSheet()"></div>
+<div class="sheet-panel">
+<div class="sheet-head">
+<h3>&#9881; الأدوات والفلاتر</h3>
+<button class="close-btn" onclick="toggleSheet()">&#10005;</button>
+</div>
+<div class="sheet-body">
+<section class="section">
+<div class="section-head"><h4>&#128065; إظهار الأعمدة</h4>
+<div class="mini-buttons">
+<button onclick="setAllColumns(true)">الكل</button>
+<button onclick="setAllColumns(false)">لا شيء</button>
+</div></div><div class="chips">
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="0" checked onchange="toggleColumn(0,this.checked)"><span>الاسم رباعياً</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="1" checked onchange="toggleColumn(1,this.checked)"><span>تاريخ البداء</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="2" checked onchange="toggleColumn(2,this.checked)"><span>الراتب الشهري</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="3" checked onchange="toggleColumn(3,this.checked)"><span>الحالة الوظيفية</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="4" checked onchange="toggleColumn(4,this.checked)"><span>عدد الأيام</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="5" checked onchange="toggleColumn(5,this.checked)"><span>إجمالي الراتب حتى اليوم</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="6" checked onchange="toggleColumn(6,this.checked)"><span>تاريخ النهاية</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="7" checked onchange="toggleColumn(7,this.checked)"><span>اسم الشركة</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="8" checked onchange="toggleColumn(8,this.checked)"><span>رقم السجل المدني</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="9" checked onchange="toggleColumn(9,this.checked)"><span>الجهه المكلف به حالياً</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="10" checked onchange="toggleColumn(10,this.checked)"><span>الحالة الانسانية</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="11" checked onchange="toggleColumn(11,this.checked)"><span>ملاحظة جهة الاحالة</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="12" checked onchange="toggleColumn(12,this.checked)"><span>وسيلة الاتصال (جوال)</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="13" checked onchange="toggleColumn(13,this.checked)"><span>المؤهل العلمي</span></label>
+<label class="chip"><input type="checkbox" class="column-toggle" data-col="14" checked onchange="toggleColumn(14,this.checked)"><span>الوظيفة</span></label>
+</div></section>
+</div>
+<div class="sheet-footer">
+<button class="apply-btn" onclick="toggleSheet()">&#10003; تطبيق وإغلاق</button>
+</div>
+</div></div>
+
+<div class="table-wrapper">
+<table id="dataTable">
+<thead><tr>
+<th class="col-idx-0">الاسم رباعياً</th>
+<th class="col-idx-1">تاريخ البداء</th>
+<th class="col-idx-2">الراتب الشهري</th>
+<th class="col-idx-3">الحالة الوظيفية</th>
+<th class="col-idx-4">عدد الأيام</th>
+<th class="col-idx-5">إجمالي الراتب حتى اليوم</th>
+<th class="col-idx-6">تاريخ النهاية</th>
+<th class="col-idx-7">اسم الشركة</th>
+<th class="col-idx-8">رقم السجل المدني</th>
+<th class="col-idx-9">الجهه المكلف به حالياً</th>
+<th class="col-idx-10">الحالة الانسانية</th>
+<th class="col-idx-11">ملاحظة جهة الاحالة</th>
+<th class="col-idx-12">وسيلة الاتصال (جوال)</th>
+<th class="col-idx-13">المؤهل العلمي</th>
+<th class="col-idx-14">الوظيفة</th>
+</tr></thead>
+<tbody>
+<tr><td class="col-idx-0" data-label="الاسم رباعياً">عبدالملك فيصل فهد الحسين</td><td class="col-idx-1" data-label="تاريخ البداء">2024-10-28</td><td class="col-idx-2" data-label="الراتب الشهري">4,500</td><td class="col-idx-3" data-label="الحالة الوظيفية">موظف</td><td class="col-idx-4" data-label="عدد الأيام">707</td><td class="col-idx-5" data-label="إجمالي الراتب حتى اليوم">106,050</td><td class="col-idx-6" data-label="تاريخ النهاية"></td><td class="col-idx-7" data-label="اسم الشركة">شركة العثمان القابضة</td><td class="col-idx-8" data-label="رقم السجل المدني">1,101,389,458</td><td class="col-idx-9" data-label="الجهه المكلف به حالياً">التجمع الصحي بالاحساء</td><td class="col-idx-10" data-label="الحالة الانسانية">ذوي الدخل المحدود من افراد المجتمع</td><td class="col-idx-11" data-label="ملاحظة جهة الاحالة"></td><td class="col-idx-12" data-label="وسيلة الاتصال (جوال)">543,491,150</td><td class="col-idx-13" data-label="المؤهل العلمي">الثانوية العامة</td><td class="col-idx-14" data-label="الوظيفة">مساعد إداري</td></tr>
+</tbody>
+</table>
+</div>
+
+<script>
+// دالة الاستدعاء من Aiven PostgreSQL عبر Vercel Serverless API
+async function fetchDataFromAiven() {
+    const refreshIcon = document.getElementById('refreshIcon');
+    try {
+        if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+        // طلب البيانات الحديثة من الـ Endpoint المعرفة في Vercel
+        const response = await fetch('/api/get-data');
+        if (!response.ok) throw new Error('فشل جلب البيانات من السيرفر');
+
+        const data = await response.json();
+        
+        // إعادة بناء أسطر الجدول
+        renderTableData(data);
+
+        // تحديث عداد السجلات وإعادة ضبط الفلاتر
+        const countSpan = document.getElementById('recordCount');
+        if (countSpan) countSpan.innerHTML = `&#128196; إجمالي السجلات: ${data.length}`;
+
+    } catch (error) {
+        console.error('خطأ أثناء التحديث:', error);
+        alert('حدث خطأ أثناء الاتصال بقاعدة بيانات Aiven على Vercel');
+    } finally {
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+    }
+}
+
+// دالة إعادة رسم الجدول بالبيانات المجلوبة حديثاً
+function renderTableData(data) {
+    const tbody = document.querySelector('#dataTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="col-idx-0" data-label="الاسم رباعياً">${row.full_name || ''}</td>
+            <td class="col-idx-1" data-label="تاريخ البداء">${row.start_date || ''}</td>
+            <td class="col-idx-2" data-label="الراتب الشهري">${row.monthly_salary || ''}</td>
+            <td class="col-idx-3" data-label="الحالة الوظيفية">${row.job_status || ''}</td>
+            <td class="col-idx-4" data-label="عدد الأيام">${row.days_count || ''}</td>
+            <td class="col-idx-5" data-label="إجمالي الراتب حتى اليوم">${row.total_salary || ''}</td>
+            <td class="col-idx-6" data-label="تاريخ النهاية">${row.end_date || ''}</td>
+            <td class="col-idx-7" data-label="اسم الشركة">${row.company_name || ''}</td>
+            <td class="col-idx-8" data-label="رقم السجل المدني">${row.national_id || ''}</td>
+            <td class="col-idx-9" data-label="الجهه المكلف به حالياً">${row.assigned_to || ''}</td>
+            <td class="col-idx-10" data-label="الحالة الانسانية">${row.humanitarian_status || ''}</td>
+            <td class="col-idx-11" data-label="ملاحظة جهة الاحالة">${row.referral_notes || ''}</td>
+            <td class="col-idx-12" data-label="وسيلة الاتصال (جوال)">${row.phone || ''}</td>
+            <td class="col-idx-13" data-label="المؤهل العلمي">${row.education || ''}</td>
+            <td class="col-idx-14" data-label="الوظيفة">${row.job_title || ''}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+</script>
+</body>
+</html>
