@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جمعية طويق لصناعة الكوادر البشرية - لوحة التحكم المالية</title>
+    <title>جمعية طويق لصناعة الكوادر البشرية - تقرير الشركات الشامل</title>
     <!-- خط Cairo العصري -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <!-- FontAwesome للأيقونات -->
@@ -11,9 +11,9 @@
     <style>
         :root {
             --primary: #0f766e;
-            --primary-hover: #115e59;
+            --primary-dark: #115e59;
             --accent: #2dd4bf;
-            --bg-main: #f8fafc;
+            --bg-main: #f1f5f9;
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-sub: #64748b;
@@ -31,28 +31,25 @@
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
-            padding: 30px 20px;
+            padding: 25px 20px;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1500px;
+            max-width: 1600px;
             margin: 0 auto;
-            background-color: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 90vh;
+            gap: 20px;
         }
 
-        /* الهيدر العصري */
+        /* الهيدر الفاخر */
         .header {
-            background: linear-gradient(135deg, #0f766e, #115e59);
+            background: linear-gradient(135deg, #0f766e, #134e4a);
             color: white;
             padding: 25px 35px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -67,80 +64,39 @@
         }
 
         .brand-icon {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background: rgba(255, 255, 255, 0.15);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             backdrop-filter: blur(5px);
         }
 
         .header h1 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .header p {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             opacity: 0.85;
         }
 
-        /* أدوات التحكم والفلترة */
-        .controls-wrapper {
+        .header-actions {
             display: flex;
-            align-items: center;
             gap: 12px;
-            flex-wrap: wrap;
+            align-items: center;
         }
 
-        .select-box, .search-box input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            outline: none;
-            font-family: 'Cairo', sans-serif;
-            transition: all 0.3s;
-        }
-
-        .select-box option {
-            background: var(--text-main);
-            color: white;
-        }
-
-        .select-box:focus, .search-box input:focus {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: var(--accent);
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            padding-right: 40px;
-            width: 220px;
-        }
-
-        .search-box i {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.8;
-        }
-
-        .btn-action {
+        .btn-refresh {
             background: white;
             color: var(--primary);
             border: none;
-            padding: 10px 20px;
+            padding: 10px 22px;
             border-radius: 10px;
             font-weight: 700;
             font-size: 0.9rem;
@@ -153,39 +109,141 @@
             font-family: 'Cairo', sans-serif;
         }
 
-        .btn-action:hover {
-            background: #f1f5f9;
-            transform: translateY(-1px);
+        .btn-refresh:hover {
+            background: #f8fafc;
+            transform: translateY(-2px);
         }
 
-        /* شريط المعلومات السفلي للهيدر */
-        .sub-header {
-            background: #f1f5f9;
-            padding: 12px 35px;
+        /* بطاقات الإحصائيات السريعة (KPIs) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-icon.green { background: #ccfbf1; color: #0f766e; }
+        .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
+        .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+
+        .stat-info span {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        .stat-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 2px;
+        }
+
+        /* شريط البحث والفلترة */
+        .toolbar {
+            background: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .record-badge {
-            background: #ccfbf1;
-            color: #0f766e;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 280px;
         }
 
-        /* منطقة الجدول */
-        .table-container {
+        .search-box input {
+            width: 100%;
+            padding: 11px 18px 11px 45px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+            background: #f8fafc;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sub);
+        }
+
+        .filter-status {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* حاوية جدول البيانات */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 620px;
+        }
+
+        .table-responsive {
             flex: 1;
             overflow: auto;
-            position: relative;
-            background: white;
         }
 
         table {
@@ -205,16 +263,16 @@
             background: #f8fafc;
             color: var(--text-sub);
             font-weight: 700;
-            padding: 14px 18px;
+            padding: 15px 16px;
             text-align: right;
             border-bottom: 2px solid var(--border);
-            border-left: 1px solid var(--border);
+            border-left: 1px solid #f1f5f9;
         }
 
         td {
-            padding: 12px 18px;
+            padding: 13px 16px;
             border-bottom: 1px solid var(--border);
-            border-left: 1px solid var(--border);
+            border-left: 1px solid #f8fafc;
             color: var(--text-main);
         }
 
@@ -226,130 +284,113 @@
             background-color: #f0fdfa;
         }
 
-        /* حالة التحميل أو الفراغ */
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-active { background: #dcfce7; color: #166534; }
+        .badge-resigned { background: #fee2e2; color: #991b1b; }
+
         .empty-state {
             text-align: center;
-            padding: 50px;
+            padding: 60px;
             color: var(--text-sub);
             font-size: 1.1rem;
-        }
-
-        /* تجاوب الشاشات الصغيرة */
-        @media (max-width: 900px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .controls-wrapper {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .search-box input {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- الهيدر الرئيسي -->
+    <!-- الهيدر الفاخر -->
     <div class="header">
         <div class="brand-section">
             <div class="brand-icon">
-                <i class="fa-solid fa-chart-pie"></i>
+                <i class="fa-solid fa-building-shield"></i>
             </div>
             <div>
                 <h1>جمعية طويق لصناعة الكوادر البشرية</h1>
-                <p>نظام استعلام قواعد البيانات والتقارير المالية المباشرة</p>
+                <p>لوحة متابعة وعرض تقرير (بحث_شامل_الشركات)</p>
             </div>
         </div>
-
-        <div class="controls-wrapper">
-            <!-- قائمة الجداول -->
-            <select id="tableSelect" class="select-box" onchange="fetchDataFromAiven()">
-                <option value="">-- اختر الجدول أو الـ View --</option>
-            </select>
-
-            <!-- زر التحديث -->
-            <button class="btn-action" onclick="fetchDataFromAiven()">
+        <div class="header-actions">
+            <button class="btn-refresh" onclick="loadViewData()">
                 <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث البيانات
             </button>
         </div>
     </div>
 
-    <!-- شريط معلومات فرعي -->
-    <div class="sub-header">
-        <div class="record-badge" id="recordCount">
-            <i class="fa-solid fa-database"></i> جاري الاتصال بقاعدة البيانات...
+    <!-- بطاقات الإحصائيات -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-info">
+                <span>إجمالي السجلات</span>
+                <h3 id="totalRecords">0</h3>
+            </div>
         </div>
-        <!-- حقل البحث الفوري -->
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="بحث سريع في الجدول..." onkeyup="filterTable()">
-            <i class="fa-solid fa-magnifying-glass"></i>
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <div class="stat-info">
+                <span>إجمالي الرواتب الكلية</span>
+                <h3 id="totalSumSalary">0.00 ر.س</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-city"></i></div>
+            <div class="stat-info">
+                <span>عدد الشركات المدرجة</span>
+                <h3 id="totalCompanies">0</h3>
+            </div>
         </div>
     </div>
 
-    <!-- الجدول -->
-    <div class="table-container">
-        <table id="dataTable">
-            <thead>
-                <tr id="tableHeaders">
-                    <th>الرجاء اختيار جدول من القائمة بالأعلى...</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <tr>
-                    <td colspan="100" class="empty-state">اختر جدولاً أو عرضاً (View) لعرض البيانات المرتبطة به.</td>
-                </tr>
-            </tbody>
-        </table>
+    <!-- شريط البحث الفوري -->
+    <div class="toolbar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="بحث بالاسم، رقم السجل، أو اسم الشركة..." onkeyup="filterData()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="filter-status">
+            <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
+            <button class="filter-btn" onclick="setFilter('موظف', this)">الموظفون</button>
+            <button class="filter-btn" onclick="setFilter('مستقيل', this)">المستقيلون</button>
+        </div>
+    </div>
+
+    <!-- الجدول الاحترافي -->
+    <div class="table-card">
+        <div class="table-responsive">
+            <table id="dataTable">
+                <thead>
+                    <tr id="tableHeaders">
+                        <th>جاري تحميل الأعمدة...</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="100" class="empty-state">جاري الاتصال بقاعدة البيانات لجلب سجلات الفيو...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
 let globalData = [];
+let currentFilter = 'all';
 
-// تحميل قائمة الجداول والفيوز عند فتح الصفحة
-async function loadTablesList() {
-    try {
-        const response = await fetch('/api/tables');
-        const tables = await response.json();
-        
-        const select = document.getElementById('tableSelect');
-        select.innerHTML = '<option value="">-- اختر الجدول أو الـ View --</option>';
-        
-        tables.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t.table_name;
-            opt.textContent = `${t.table_name} (${t.table_type})`;
-            
-            // اختيار الفيو المخصص افتراضياً
-            if (t.table_name.includes('بحث_شامل_الشركات')) {
-                opt.selected = true;
-            }
-            select.appendChild(opt);
-        });
-
-        if (select.value) {
-            fetchDataFromAiven();
-        }
-    } catch (err) {
-        console.error('خطأ في جلب قائمة الجداول:', err);
-    }
-}
-
-// جلب البيانات بناءً على الجدول المختار
-async function fetchDataFromAiven() {
-    const select = document.getElementById('tableSelect');
-    const tableName = select.value;
-    if (!tableName) return;
-
+// جلب بيانات الفيو المخصص تلقائياً
+async function loadViewData() {
     const refreshIcon = document.getElementById('refreshIcon');
     try {
         if (refreshIcon) refreshIcon.classList.add('fa-spin');
 
-        const response = await fetch(`/api/get-data?name=${encodeURIComponent(tableName)}`);
+        // جلب البيانات حصرياً للفيو المطلوبة
+        const response = await fetch('/api/get-data?name=بحث_شامل_الشركات');
         const data = await response.json();
         
         if (!response.ok) {
@@ -357,23 +398,43 @@ async function fetchDataFromAiven() {
         }
 
         globalData = data;
-        renderDynamicTable(data);
-
-        const countBadge = document.getElementById('recordCount');
-        if (countBadge) {
-            countBadge.innerHTML = `<i class="fa-solid fa-database"></i> إجمالي السجلات: ${data.length.toLocaleString()}`;
-        }
+        updateStatistics(data);
+        renderTable(data);
 
     } catch (error) {
-        console.error('خطأ أثناء التحديث:', error);
+        console.error('خطأ:', error);
         alert('تفاصيل الخطأ: ' + error.message);
     } finally {
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
     }
 }
 
-// رسم الجدول بمرونة تامة
-function renderDynamicTable(data) {
+// حساب وتحديث الإحصائيات العلوية
+function updateStatistics(data) {
+    document.getElementById('totalRecords').textContent = data.length.toLocaleString();
+
+    let totalSalarySum = 0;
+    const companiesSet = new Set();
+
+    data.forEach(row => {
+        // البحث عن أعمدة الراتب والشركة بمرونة
+        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي'));
+        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
+
+        if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) {
+            totalSalarySum += parseFloat(row[salaryKey]);
+        }
+        if (companyKey && row[companyKey]) {
+            companiesSet.add(row[companyKey]);
+        }
+    });
+
+    document.getElementById('totalSumSalary').textContent = totalSalarySum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ر.س';
+    document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
+}
+
+// عرض ورسم الجدول
+function renderTable(data) {
     const theadTr = document.getElementById('tableHeaders');
     const tbody = document.getElementById('tableBody');
     
@@ -382,13 +443,13 @@ function renderDynamicTable(data) {
 
     if (!data || data.length === 0) {
         theadTr.innerHTML = '<th>تنبيه</th>';
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد سجلات مسجلة في هذا الجدول حالياً.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد بيانات مطابقة حالياً.</td></tr>';
         return;
     }
 
     const columns = Object.keys(data[0]);
 
-    // ترويسة الأعمدة
+    // إنشاء الترويسة
     columns.forEach(col => {
         const th = document.createElement('th');
         th.textContent = col;
@@ -404,7 +465,7 @@ function populateRows(data, columns) {
     tbody.innerHTML = '';
 
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة للبحث.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة للبحث أو الفلتر الحالي.</td></tr>';
         return;
     }
 
@@ -412,35 +473,65 @@ function populateRows(data, columns) {
         const tr = document.createElement('tr');
         columns.forEach(col => {
             const td = document.createElement('td');
-            const val = row[col];
-            td.textContent = val !== null && val !== undefined ? val : '';
+            let val = row[col];
+
+            // تنظيف عرض التواريخ لتكون مريحة
+            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
+                val = val.split('T')[0];
+            }
+
+            // تنسيق الحالات الوظيفية بألوان مميزة
+            if (col.includes('الحالة') && (val === 'موظف' || val === 'مستقيل')) {
+                const span = document.createElement('span');
+                span.className = `badge-status ${val === 'موظف' ? 'badge-active' : 'badge-resigned'}`;
+                span.textContent = val;
+                td.appendChild(span);
+            } else {
+                td.textContent = val !== null && val !== undefined ? val : '';
+            }
+
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
     });
 }
 
-// البحث الفوري في الجدول
-function filterTable() {
+// تصفية البيانات (بحث فوري + فلتر الحالة)
+function filterData() {
     const query = document.getElementById('searchInput').value.toLowerCase();
-    if (!globalData.length) return;
 
     const filtered = globalData.filter(row => {
-        return Object.values(row).some(val => 
+        // مطابقة البحث النصي
+        const matchesSearch = Object.values(row).some(val => 
             String(val).toLowerCase().includes(query)
         );
+
+        // مطابقة فلتر الحالة الوظيفية إن وجد
+        let matchesStatus = true;
+        if (currentFilter !== 'all') {
+            const statusVal = Object.values(row).find(val => String(val).trim() === currentFilter);
+            matchesStatus = !!statusVal;
+        }
+
+        return matchesSearch && matchesStatus;
     });
 
-    const columns = Object.keys(globalData[0]);
-    populateRows(filtered, columns);
-
-    const countBadge = document.getElementById('recordCount');
-    countBadge.innerHTML = `<i class="fa-solid fa-database"></i> النتائج المعروضة: ${filtered.length.toLocaleString()} من ${globalData.length.toLocaleString()}`;
+    if (globalData.length > 0) {
+        const columns = Object.keys(globalData[0]);
+        populateRows(filtered, columns);
+    }
 }
 
-// بدء التشغيل
+function setFilter(status, btnElement) {
+    currentFilter = status;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+    filterData();
+}
+
+// التحميل التلقائي عند فتح الصفحة
 document.addEventListener('DOMContentLoaded', () => {
-    loadTablesList();
+    loadViewData();
 });
 </script>
 
