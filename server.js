@@ -6,7 +6,7 @@ const { Pool } = require('pg');
 const path = require('path');
 const app = express();
 
-// تنظيف رابط الاتصال من أي معاملات قد تتعارض مع pg
+// تنظيف رابط الاتصال
 let connectionString = process.env.DATABASE_URL || '';
 if (connectionString.includes('?')) {
   connectionString = connectionString.split('?')[0];
@@ -19,17 +19,33 @@ const pool = new Pool({
   }
 });
 
-// إتاحة الملفات الثابتة
 app.use(express.static(path.join(__dirname)));
 
-// مسار API لجلب البيانات من الفيو بتركيب Schema.View الصحيح
+// مسار لجلب قائمة جميع الجداول والفيوز المتاحة في قاعدة البيانات
+app.get('/api/tables', async (req, res) => {
+  try {
+    const queryText = `
+      SELECT table_schema, table_name, table_type 
+      FROM information_schema.tables 
+      WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+      ORDER BY table_type, table_name;
+    `;
+    const result = await pool.query(queryText);
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// مسار API لجلب البيانات من الفيو المطلوب
 app.get('/api/get-data', async (req, res) => {
   try {
     if (!process.env.DATABASE_URL) {
       throw new Error('لم يتم قراءة متغير DATABASE_URL من Vercel.');
     }
-    // فصل الـ Schema عن اسم الـ View بنقطة
-    const result = await pool.query('SELECT * FROM "public"."بحث_شامل_الشركات"');
+    // تجربة اسم الفيو أو الجدول
+    const tableName = req.query.name || 'بحث_شامل_الشركات';
+    const result = await pool.query(`SELECT * FROM "${tableName}"`);
     res.json(result.rows);
   } catch (err) {
     console.error('Database Error:', err);
@@ -40,7 +56,6 @@ app.get('/api/get-data', async (req, res) => {
   }
 });
 
-// توجيه الصفحة الرئيسية إلى index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
