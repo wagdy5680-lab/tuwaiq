@@ -6,6 +6,8 @@
     <title>جمعية طويق لصناعة الكوادر البشرية - تقرير الشركات الشامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة SheetJS لتصدير ملفات Excel الحقيقية (.xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root {
             --primary: #0d9488;
@@ -372,7 +374,6 @@
             position: relative;
         }
 
-        /* هنا تظهر الحروف على شكل نجوم *** أثناء الكتابة */
         .password-box input[type="password"] {
             width: 100%;
             padding: 12px 18px;
@@ -846,13 +847,12 @@
 </head>
 <body>
 
-<!-- نافذة إدخال الرقم السري (تظهر نجوم *** عند الكتابة) -->
+<!-- نافذة إدخال الرقم السري -->
 <div class="password-modal" id="passwordModal">
     <div class="password-box">
         <h3><i class="fa-solid fa-lock"></i> إدخال الرقم السري</h3>
         <p>يرجى إدخال الرقم السري لفتح لوحة تخصيص الأعمدة:</p>
         <div class="password-input-group">
-            <!-- نوع الحقل password يجعل الحروف تظهر على شكل نجوم *** -->
             <input type="password" id="secretInput" placeholder="••••" onkeydown="checkEnter(event)">
         </div>
         <div class="password-actions">
@@ -874,7 +874,7 @@
             </div>
         </div>
         <div class="header-actions">
-            <button class="btn-action export-excel" onclick="exportToCSV()">
+            <button class="btn-action export-excel" onclick="exportToExcel()">
                 <i class="fa-solid fa-file-excel"></i> Excel
             </button>
             <button class="btn-action export-pdf" onclick="exportToPDF()">
@@ -968,12 +968,7 @@ let allColumns = [];
 let hiddenColumns = new Set();
 let currentFilter = 'all';
 
-// ==========================================
-// قسم الأمان وتشفير الرقم السري داخل الكود
-// (الرقم السري الحقيقي هنا مشفر بـ Base64 ولن يظهر أبداً كصيغة صريحة في ملفات التكست)
-// الرقم السري الافتراضي هنا كمثال هو: 1234 (ويمكنك تغييره لاحقاً)
-// ==========================================
-const ENCRYPTED_SECRET = "YWExMjM0NTZhYQ=="; // تعادل كلمة 1234 مشفرة
+const ENCRYPTED_SECRET = "YWExMjM0NTZhYQ=="; // كلمة المرور المشفرة
 
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
@@ -1070,7 +1065,6 @@ function toggleAllColumns(show) {
     filterData();
 }
 
-// عند الضغط على زر اختيار الأعمدة، تفتح نافذة إدخال الرقم السري
 function toggleColumnManager() {
     const modal = document.getElementById('passwordModal');
     modal.classList.add('show');
@@ -1090,7 +1084,6 @@ function checkEnter(event) {
     }
 }
 
-// التحقق من صحة الرقم السري المدخل مقارنة بالقيمة المشفرة
 function verifyPassword() {
     const enteredValue = document.getElementById('secretInput').value;
     
@@ -1111,7 +1104,8 @@ function verifyPassword() {
     }
 }
 
-function exportToCSV() {
+// دالة تصدير ملف إكسيل حقيقي ومنظم (.xlsx) مع دعم اللغة العربية وتوجيه الصفحة يميناً
+function exportToExcel() {
     const filteredData = getFilteredData();
     if (filteredData.length === 0) {
         showToast('لا توجد بيانات للتصدير!', 'error');
@@ -1119,24 +1113,30 @@ function exportToCSV() {
     }
 
     const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
-    let csvContent = "\uFEFF" + visibleColumns.join(",") + "\n";
-
-    filteredData.forEach(row => {
-        const rowData = visibleColumns.map(col => {
-            let val = row[col] !== null && row[col] !== undefined ? String(row[col]) : '';
-            return `"${val.replace(/"/g, '""')}"`;
+    
+    // تجهيز البيانات لتتوافق مع بناء الإكسيل
+    const excelData = filteredData.map(row => {
+        let cleanRow = {};
+        visibleColumns.forEach(col => {
+            let val = row[col];
+            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
+                val = val.split('T')[0];
+            }
+            cleanRow[col] = val !== null && val !== undefined ? val : '';
         });
-        csvContent += rowData.join(",") + "\n";
+        return cleanRow;
     });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Tuwaiq_Companies_Report_${new Date().toISOString().slice(0, 10)}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    
+    // ضبط اتجاه ملف الإكسيل ليكون من اليمين لليسار (RTL)
+    if (!worksheet['!views']) worksheet['!views'] = [{rtl: true}];
+    else worksheet['!views'][0].rtl = true;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "تقرير الشركات");
+
+    XLSX.writeFile(workbook, `Tuwaiq_Companies_Report_${new Date().toISOString().slice(0, 10)}.xlsx`);
     showToast('تم تصدير ملف Excel بنجاح');
 }
 
