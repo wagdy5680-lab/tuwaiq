@@ -168,7 +168,7 @@
 
         .header-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
             position: relative;
@@ -179,14 +179,14 @@
             background: rgba(255, 255, 255, 0.95);
             color: var(--primary-dark);
             border: none;
-            padding: 11px 18px;
+            padding: 10px 15px;
             border-radius: var(--radius-sm);
             font-weight: 700;
-            font-size: 0.88rem;
+            font-size: 0.84rem;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             transition: var(--transition);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             font-family: 'Cairo', sans-serif;
@@ -200,20 +200,40 @@
             color: var(--primary);
         }
 
-        .btn-action.export-btn {
+        .btn-action.export-excel {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             border: none;
         }
-        .btn-action.export-btn:hover {
+        .btn-action.export-excel:hover {
             background: linear-gradient(135deg, #059669, #047857);
             color: white;
         }
 
-        /* ===== بطاقات الإحصائيات ===== */
+        .btn-action.export-pdf {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+        }
+        .btn-action.export-pdf:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+        }
+
+        .btn-action.print-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+        }
+        .btn-action.print-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+        }
+
+        /* ===== بطاقات الإحصائيات (تم تقليصها إلى بطاقتين رئيسيتين بعد إخفاء الرواتب) ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 18px;
         }
 
@@ -274,12 +294,6 @@
             background: linear-gradient(135deg, #ccfbf1, #99f6e4);
             color: #0f766e;
             box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
-        }
-
-        .stat-icon.blue {
-            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
-            color: #0284c7;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
         }
 
         .stat-icon.purple {
@@ -694,6 +708,34 @@
             to { transform: rotate(360deg); }
         }
 
+        /* تنسيق خاص للطباعة و PDF عبر المتصفح */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            .header, .stats-grid, .column-toggle-panel, .toolbar, .header-actions {
+                display: none !important;
+            }
+            .table-card {
+                box-shadow: none !important;
+                border: none !important;
+                height: auto !important;
+            }
+            .table-responsive {
+                overflow: visible !important;
+            }
+            table {
+                font-size: 10pt !important;
+                width: 100% !important;
+            }
+            th, td {
+                padding: 8px !important;
+                border: 1px solid #ddd !important;
+                color: black !important;
+            }
+        }
+
         @media (max-width: 768px) {
             body { padding: 14px; }
             .header { padding: 20px; flex-direction: column; align-items: flex-start; }
@@ -720,32 +762,31 @@
             </div>
         </div>
         <div class="header-actions">
-            <button class="btn-action export-btn" onclick="exportToCSV()">
-                <i class="fa-solid fa-file-excel"></i> تصدير Excel
+            <button class="btn-action export-excel" onclick="exportToCSV()">
+                <i class="fa-solid fa-file-excel"></i> Excel
+            </button>
+            <button class="btn-action export-pdf" onclick="exportToPDF()">
+                <i class="fa-solid fa-file-pdf"></i> PDF
+            </button>
+            <button class="btn-action print-btn" onclick="printTable()">
+                <i class="fa-solid fa-print"></i> طباعة
             </button>
             <button class="btn-action" onclick="toggleColumnManager()">
-                <i class="fa-solid fa-sliders"></i> تخصيص الأعمدة
+                <i class="fa-solid fa-sliders"></i> اختيار الأعمدة
             </button>
             <button class="btn-action" onclick="loadViewData()">
-                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث البيانات
+                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث
             </button>
         </div>
     </div>
 
-    <!-- الإحصائيات -->
+    <!-- الإحصائيات (تم الاحتفاظ فقط بالسجلات والشركات وإخفاء الرواتب تماماً) -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
             <div class="stat-info">
                 <span>إجمالي السجلات المعروضة</span>
                 <h3 id="totalRecords">0</h3>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon blue"><i class="fa-solid fa-money-bill-wave"></i></div>
-            <div class="stat-info">
-                <span>إجمالي الرواتب الكلية</span>
-                <h3 id="totalSumSalary">0.00 ر.س</h3>
             </div>
         </div>
         <div class="stat-card">
@@ -757,10 +798,10 @@
         </div>
     </div>
 
-    <!-- لوحة الأعمدة المتطورة -->
+    <!-- لوحة اختيار وإدارة الأعمدة -->
     <div class="column-toggle-panel" id="columnManagerPanel">
         <div class="panel-header-actions">
-            <span><i class="fa-solid fa-sliders"></i> إدارة وإظهار الأعمدة</span>
+            <span><i class="fa-solid fa-sliders"></i> تخصيص وإظهار الأعمدة</span>
             <div>
                 <button class="btn-text" onclick="toggleAllColumns(true)">إظهار الكل</button>
                 <button class="btn-text" onclick="toggleAllColumns(false)">إخفاء الكل</button>
@@ -850,16 +891,16 @@ async function loadViewData() {
         globalData = data;
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
-            // إخفاء أعمدة الرواتب افتراضياً للخصوصية والاحترافية العالية
+            // إخفاء أعمدة الرواتب افتراضياً حرصاً على إخفائها تماماً
             allColumns.forEach(col => {
-                if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي')) {
+                if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي') || col.includes('salary')) {
                     hiddenColumns.add(col);
                 }
             });
         }
         
         buildColumnManagerUI();
-        filterData(); // يقوم بتحديث الجدول والإحصائيات بناء على الفلاتر والبحث
+        filterData();
         showToast('تم تحديث البيانات بنجاح');
 
     } catch (error) {
@@ -871,26 +912,18 @@ async function loadViewData() {
     }
 }
 
-// الإحصائيات (تتحدث ديناميكياً مع نتائج البحث والفلترة)
+// تحديث الإحصائيات (بدون الرواتب)
 function updateStatistics(filteredData) {
     document.getElementById('totalRecords').textContent = filteredData.length.toLocaleString();
 
-    let totalSalarySum = 0;
     const companiesSet = new Set();
-
     filteredData.forEach(row => {
-        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي') || k.includes('اجمالي'));
         const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
-
-        if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) {
-            totalSalarySum += parseFloat(row[salaryKey]);
-        }
         if (companyKey && row[companyKey]) {
             companiesSet.add(row[companyKey]);
         }
     });
 
-    document.getElementById('totalSumSalary').textContent = totalSalarySum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ر.س';
     document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
 }
 
@@ -930,7 +963,7 @@ function toggleAllColumns(show) {
     filterData();
 }
 
-// فتح لوحة الأعمدة برمز سري مرن
+// فتح لوحة الأعمدة بكلمة سر مرنة
 function toggleColumnManager() {
     const panel = document.getElementById('columnManagerPanel');
     if (!panel.classList.contains('show')) {
@@ -945,7 +978,7 @@ function toggleColumnManager() {
     }
 }
 
-// تصدير البيانات المعروضة إلى CSV (Excel)
+// تصدير البيانات إلى Excel (CSV)
 function exportToCSV() {
     const filteredData = getFilteredData();
     if (filteredData.length === 0) {
@@ -972,7 +1005,20 @@ function exportToCSV() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    showToast('تم تصدير التقرير بنجاح');
+    showToast('تم تصدير ملف Excel بنجاح');
+}
+
+// استخراج PDF (يفتح نافذة الطباعة لاختيار حفظ كـ PDF مع الحفاظ على التنسيق والاتجاه)
+function exportToPDF() {
+    showToast('جاري تحضير ملف PDF للطباعة والحفظ...');
+    setTimeout(() => {
+        window.print();
+    }, 600);
+}
+
+// طباعة الجدول مباشرة
+function printTable() {
+    window.print();
 }
 
 // عرض الجدول
@@ -993,7 +1039,7 @@ function renderTable(data) {
 
     if (visibleColumns.length === 0) {
         theadTr.innerHTML = '<th>تنبيه</th>';
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">تم إخفاء كافة الأعمدة. يرجى إظهار بعض الأعمدة من قائمة "تخصيص الأعمدة".</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">تم إخفاء كافة الأعمدة. يرجى إظهار بعض الأعمدة من قائمة "اختيار الأعمدة".</td></tr>';
         return;
     }
 
