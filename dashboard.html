@@ -55,7 +55,6 @@
             line-height: 1.6;
         }
 
-        /* خلفية زخرفية */
         body::before {
             content: '';
             position: fixed;
@@ -226,10 +225,10 @@
             font-size: 1rem;
         }
 
-        /* ===== بطاقات الإحصائيات ===== */
+        /* ===== بطاقات الإحصائيات (تم تقليصها لبطاقتين) ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 18px;
         }
 
@@ -290,12 +289,6 @@
             background: linear-gradient(135deg, #ccfbf1, #99f6e4);
             color: #0f766e;
             box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
-        }
-
-        .stat-icon.blue {
-            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
-            color: #0284c7;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
         }
 
         .stat-icon.purple {
@@ -797,20 +790,13 @@
         </div>
     </div>
 
-    <!-- الإحصائيات -->
+    <!-- الإحصائيات (بدون إجمالي الرواتب) -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
             <div class="stat-info">
                 <span>إجمالي السجلات</span>
                 <h3 id="totalRecords">0</h3>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon blue"><i class="fa-solid fa-money-bill-wave"></i></div>
-            <div class="stat-info">
-                <span>إجمالي الرواتب الكلية</span>
-                <h3 id="totalSumSalary">0.00 ر.س</h3>
             </div>
         </div>
         <div class="stat-card">
@@ -878,6 +864,19 @@ let allColumns = [];
 let hiddenColumns = new Set();
 let currentFilter = 'all';
 
+// دالة التحقق مما إذا كان العمود متعلقاً بالرواتب أو الأجور لإخفائه تلقائياً
+function isSalaryRelatedColumn(colName) {
+    const lower = colName.toLowerCase();
+    return lower.includes('الراتب') || 
+           lower.includes('راتب') || 
+           lower.includes('salary') || 
+           lower.includes('إجمالي') || 
+           lower.includes('اجمالي') || 
+           lower.includes('أجر') || 
+           lower.includes('اجر') || 
+           lower.includes('مبلغ');
+}
+
 // جلب البيانات
 async function loadViewData() {
     const refreshIcon = document.getElementById('refreshIcon');
@@ -897,8 +896,9 @@ async function loadViewData() {
         globalData = data;
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
+            // إخفاء أعمدة الرواتب تلقائياً منذ البداية
             allColumns.forEach(col => {
-                if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي')) {
+                if (isSalaryRelatedColumn(col)) {
                     hiddenColumns.add(col);
                 }
             });
@@ -917,35 +917,31 @@ async function loadViewData() {
     }
 }
 
-// الإحصائيات
+// الإحصائيات (بدون حساب الرواتب)
 function updateStatistics(data) {
     document.getElementById('totalRecords').textContent = data.length.toLocaleString();
 
-    let totalSalarySum = 0;
     const companiesSet = new Set();
 
     data.forEach(row => {
-        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي') || k.includes('اجمالي'));
         const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
-
-        if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) {
-            totalSalarySum += parseFloat(row[salaryKey]);
-        }
         if (companyKey && row[companyKey]) {
             companiesSet.add(row[companyKey]);
         }
     });
 
-    document.getElementById('totalSumSalary').textContent = totalSalarySum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ر.س';
     document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
 }
 
-// بناء لوحة الأعمدة
+// بناء لوحة الأعمدة (استبعاد أعمدة الرواتب تماماً أو قفلها على الإخفاء)
 function buildColumnManagerUI() {
     const container = document.getElementById('columnCheckboxes');
     container.innerHTML = '';
 
     allColumns.forEach(col => {
+        // تجاهل عرض أعمدة الرواتب في لوحة التخصيص نهائياً
+        if (isSalaryRelatedColumn(col)) return;
+
         const label = document.createElement('label');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -977,7 +973,7 @@ function toggleColumnManager() {
     }
 }
 
-// عرض الجدول
+// عرض الجدول (مع منع عرض أي عمود رواتب حتى لو لم يتم رصده مسبقاً)
 function renderTable(data) {
     const theadTr = document.getElementById('tableHeaders');
     const tbody = document.getElementById('tableBody');
@@ -991,7 +987,7 @@ function renderTable(data) {
         return;
     }
 
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
 
     if (visibleColumns.length === 0) {
         theadTr.innerHTML = '<th>تنبيه</th>';
@@ -1049,9 +1045,10 @@ function getFilteredData() {
     const query = document.getElementById('searchInput').value.toLowerCase();
 
     return globalData.filter(row => {
-        const matchesSearch = Object.values(row).some(val => 
-            String(val).toLowerCase().includes(query)
-        );
+        const matchesSearch = Object.entries(row).some(([key, val]) => {
+            if (isSalaryRelatedColumn(key)) return false; // تجاهل حقول الرواتب تماماً أثناء البحث
+            return String(val).toLowerCase().includes(query);
+        });
 
         let matchesStatus = true;
         if (currentFilter !== 'all') {
@@ -1065,7 +1062,7 @@ function getFilteredData() {
 
 function filterData() {
     const filtered = getFilteredData();
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
     populateRows(filtered, visibleColumns);
 }
 
@@ -1076,7 +1073,7 @@ function setFilter(status, btnElement) {
     filterData();
 }
 
-// دالة تصدير البيانات إلى Excel
+// دالة تصدير البيانات إلى Excel (باستبعاد أعمدة الرواتب)
 function exportToExcel() {
     const filteredData = getFilteredData();
     if (!filteredData || filteredData.length === 0) {
@@ -1084,7 +1081,7 @@ function exportToExcel() {
         return;
     }
 
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
     
     const excelData = filteredData.map(row => {
         let cleanRow = {};
@@ -1105,7 +1102,7 @@ function exportToExcel() {
     XLSX.writeFile(workbook, "Tuwaiq_Companies_Report.xlsx");
 }
 
-// دالة تصدير البيانات إلى PDF
+// دالة تصدير البيانات إلى PDF (باستبعاد أعمدة الرواتب)
 function exportToPDF() {
     const filteredData = getFilteredData();
     if (!filteredData || filteredData.length === 0) {
@@ -1116,7 +1113,7 @@ function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
 
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
     
     const tableHeaders = visibleColumns;
     const tableRows = filteredData.map(row => {
