@@ -443,9 +443,10 @@ async function loadViewData() {
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
             
-            // إخفاء أعمدة المرتب وإجمالي المرتب افتراضياً
+            // إخفاء أعمدة المرتب وإجمالي المرتب افتراضياً بأكثر من صيغة محتملة
             allColumns.forEach(col => {
-                if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي')) {
+                const c = col.toLowerCase();
+                if (c.includes('راتب') || c.includes('مرتب') || c.includes('إجمالي') || c.includes('اجمالي') || c.includes('salary')) {
                     hiddenColumns.add(col);
                 }
             });
@@ -463,7 +464,7 @@ async function loadViewData() {
     }
 }
 
-// حساب وتحديث الإحصائيات العلوية
+// حساب وتحديث الإحصائيات العلوية (تعتمد على البيانات الكلية بغض النظر عن إخفاء الأعمدة)
 function updateStatistics(data) {
     document.getElementById('totalRecords').textContent = data.length.toLocaleString();
 
@@ -471,8 +472,14 @@ function updateStatistics(data) {
     const companiesSet = new Set();
 
     data.forEach(row => {
-        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي') || k.includes('اجمالي'));
-        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
+        const salaryKey = Object.keys(row).find(k => {
+            const c = k.toLowerCase();
+            return c.includes('راتب') || c.includes('مرتب') || c.includes('salary') || c.includes('إجمالي') || c.includes('اجمالي');
+        });
+        const companyKey = Object.keys(row).find(k => {
+            const c = k.toLowerCase();
+            return c.includes('شركة') || c.includes('company');
+        });
 
         if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) {
             totalSalarySum += parseFloat(row[salaryKey]);
