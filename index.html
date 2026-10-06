@@ -42,19 +42,19 @@
             flex-direction: column;
             gap: 25px;
         }
-        .brand-logo-container {
-            width: 100%;
+        .brand-icon {
+            width: 75px;
+            height: 75px;
+            background: rgba(15, 118, 110, 0.1);
+            color: var(--primary);
+            font-size: 2.2rem;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto;
         }
-        .brand-logo-container img {
-            max-height: 75px;
-            max-width: 100%;
-            object-fit: contain;
-        }
-        .welcome-header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; display: none; } /* تم إخفاء العنوان النصي هنا تلافياً للتكرار لوجوده داخل الشعار نفسه، ويمكنك إظهاره بحذفه */
+        .welcome-header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
         .welcome-header p { font-size: 0.95rem; color: var(--text-sub); }
         
         .btn-dashboard {
@@ -194,9 +194,9 @@
     </div>
 
     <div class="welcome-card">
-        <!-- الشعار الجديد مدمج بدقة ككود Base64 -->
-        <div class="brand-logo-container">
-            <img src="data:image/avif;base64,AAAAIGZ0eWF2aWYAAAAhdGF2aWZtaWYxbWlhZk1BMUWEAAADAHB1c2VtYXBzAAAGBGNvbHIKAAAAAQAAAAYKAAAAAQAAAAAEaW5mbwAAACgAAAAbc3BlYwAAAGgAAAALcGFzcAAABGgAAABpbmZpAAACRAAAAAdpcHJwAAAACGlwaDEgAAACTnBpc3AAAAAEcmlwX2luZm8AAAAUaXBsLAADAAAGAAAAAEFpcGNvAAAADnBpc3BmAAAAAmlmcmEAAABkcmVjAAAAAXNlY3QAAABqcGVpZm8AAABmaWxvYwAAAABtZGF0EgAEAAAAATU0Bgd0gR8G70v6vY33M2h2Y3J0aW9uY2FydHJlY29yZGM=" alt="شعار جمعية طويق لصناعة الكوادر البشرية">
+        <!-- الأيقونة الافتراضية -->
+        <div class="brand-icon">
+            <i class="fa-solid fa-building-columns"></i>
         </div>
         
         <div class="welcome-header">
