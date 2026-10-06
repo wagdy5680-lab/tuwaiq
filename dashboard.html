@@ -61,7 +61,6 @@
             overflow-x: hidden;
         }
 
-        /* خلفية زخرفية محسّنة */
         body::before {
             content: '';
             position: fixed;
@@ -146,7 +145,6 @@
             animation: floatSlow 18s ease-in-out infinite reverse;
         }
 
-        /* شريط زخرفي علوي */
         .header-top-bar {
             position: absolute;
             top: 0;
@@ -181,25 +179,9 @@
             position: relative;
         }
 
-        .brand-icon::after {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--accent), transparent);
-            opacity: 0;
-            transition: var(--transition);
-            z-index: -1;
-            filter: blur(8px);
-        }
-
         .brand-icon:hover {
             transform: scale(1.08) rotate(-5deg);
             box-shadow: 0 12px 32px rgba(45, 212, 191, 0.4);
-        }
-
-        .brand-icon:hover::after {
-            opacity: 0.6;
         }
 
         .header h1 {
@@ -973,7 +955,6 @@
             animation: fadeInRow 0.3s ease forwards;
         }
 
-        /* تحسين الوصول */
         ::selection {
             background: var(--accent);
             color: var(--primary-darker);
@@ -1101,4 +1082,19 @@ let allColumns = [];
 let hiddenColumns = new Set();
 let currentFilter = 'all';
 
-// التحقق
+// ============================================================
+// قائمة سوداء صريحة: ضع هنا أسماء أي أعمدة مالية ظهرت عندك
+// ============================================================
+const EXPLICIT_BLACKLIST = [
+    // أضف أسماء الأعمدة الدقيقة هنا إن ظهر أي عمود مالي
+    // مثال: 'الراتب الأساسي', 'إجمالي الراتب'
+];
+
+// ============================================================
+// دالة موسّعة لكشف أي عمود متعلق بالمرتبات أو المبالغ المالية
+// ============================================================
+function isSalaryRelatedColumn(colName) {
+    if (!colName) return false;
+    
+    const clean = String(colName).trim().toLowerCase();
+    
