@@ -67,6 +67,12 @@
         }
         .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
         
+        .selector-group { display: flex; align-items: center; gap: 10px; }
+        .selector-group select {
+            padding: 10px 15px; border: 1px solid var(--border); border-radius: 10px;
+            font-family: 'Cairo', sans-serif; font-size: 0.9rem; outline: none; background: #f8fafc; color: var(--text-main);
+        }
+
         .column-selector-wrapper { position: relative; }
         .column-menu {
             display: none; position: absolute; left: 0; top: 110%;
@@ -86,17 +92,10 @@
         thead { position: sticky; top: 0; z-index: 10; }
         th { background: #f8fafc; color: var(--text-sub); font-weight: 700; padding: 12px 16px; text-align: right; border-bottom: 2px solid var(--border); }
         
-        /* تصميم حقول البحث الخاصة بكل عمود */
         th .column-filter {
-            margin-top: 6px;
-            width: 100%;
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            outline: none;
-            font-family: 'Cairo', sans-serif;
-            background: #ffffff;
+            margin-top: 6px; width: 100%; padding: 6px 10px; font-size: 0.8rem;
+            border: 1px solid var(--border); border-radius: 6px; outline: none;
+            font-family: 'Cairo', sans-serif; background: #ffffff;
         }
         th .column-filter:focus { border-color: var(--primary); }
 
@@ -116,7 +115,7 @@
                 </div>
                 <div>
                     <h1>جمعية طويق لصناعة الكوادر البشرية</h1>
-                    <p>لوحة متابعة تقرير الشركات الشامل</p>
+                    <p>لوحة متابعة قاعدة البيانات الشاملة</p>
                 </div>
             </div>
             <div>
@@ -126,8 +125,15 @@
             </div>
         </div>
 
-        <!-- شريط الأدوات (بحث عام + تخصيص الأعمدة) -->
+        <!-- شريط الأدوات (اختيار الجدول، البحث العام، وتخصيص الأعمدة) -->
         <div class="toolbar">
+            <div class="selector-group">
+                <label for="tableSelect" style="font-weight: 700; font-size: 0.9rem;">الجدول / الفيو:</label>
+                <select id="tableSelect" onchange="changeTable()">
+                    <option value="بحث_شامل_الشركات">بحث_شامل_الشركات</option>
+                </select>
+            </div>
+
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="بحث عام سريع في كل السجلات..." onkeyup="filterData()">
                 <i class="fa-solid fa-magnifying-glass"></i>
@@ -135,7 +141,7 @@
 
             <div class="column-selector-wrapper">
                 <button onclick="toggleColumnMenu()" class="btn-action" style="background: #f8fafc; border: 1px solid var(--border); color: var(--text-main);">
-                    <i class="fa-solid fa-columns"></i> تخصيص الأعمدة الظاهرة
+                    <i class="fa-solid fa-columns"></i> تخصيص الأعمدة
                 </button>
                 <div id="columnMenu" class="column-menu">
                     <p>اختر الأعمدة للإظهار:</p>
@@ -167,30 +173,70 @@
 let globalData = [];
 let allColumns = [];
 let visibleColumns = new Set();
-let columnFilters = {}; // لتخزين قيم فلتر كل عمود
+let columnFilters = {};
 
 window.addEventListener('DOMContentLoaded', () => {
-    loadViewData();
+    loadTablesList();
 });
 
-async function loadViewData() {
+// جلب قائمة الجداول والفيوز المتاحة في قاعدة البيانات لتعبئة القائمة المنسدلة
+async function loadTablesList() {
     try {
-        const response = await fetch('/api/get-data?name=بحث_شامل_الشركات');
+        const response = await fetch('/api/tables');
+        const tables = await response.json();
+        const select = document.getElementById('tableSelect');
+        
+        if (response.ok && tables.length > 0) {
+            select.innerHTML = '';
+            tables.forEach(t => {
+                const tableName = t.table_name;
+                const option = document.createElement('option');
+                option.value = tableName;
+                option.textContent = `${tableName} (${t.table_type})`;
+                if (tableName === 'بحث_شامل_الشركات') {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+    } catch (e) {
+        console.warn('تعذر جلب قائمة الجداول، سيتم الاعتماد على الجدول الافتراضي', e);
+    }
+    loadViewData();
+}
+
+// جلب بيانات الجدول المختار مع ترميز الاسم ليدعم اللغة العربية على Vercel
+async function loadViewData() {
+    const tableName = document.getElementById('tableSelect').value || 'بحث_شامل_الشركات';
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="100" class="empty-state">جاري جلب البيانات...</td></tr>';
+    
+    try {
+        const encodedName = encodeURIComponent(tableName);
+        const response = await fetch(`/api/get-data?name=${encodedName}`);
         const data = await response.json();
         
-        if (!response.ok) throw new Error(data.error || 'فشل الجلب');
+        if (!response.ok) throw new Error(data.error || data.details || 'فشل الجلب');
 
         globalData = data;
+        columnFilters = {}; // تصفير الفلاتر عند تغيير الجدول
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
             visibleColumns = new Set(allColumns);
             buildColumnCheckboxes();
+        } else {
+            allColumns = [];
+            visibleColumns.clear();
         }
         renderTable(data);
     } catch (error) {
         console.error('خطأ:', error);
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="100" class="empty-state" style="color:red;">خطأ في الاتصال: ${error.message}</td></tr>`;
+        document.getElementById('tableHeaders').innerHTML = '<th>خطأ</th>';
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="100" class="empty-state" style="color:red;">تعذر جلب البيانات: ${error.message}</td></tr>`;
     }
+}
+
+function changeTable() {
+    loadViewData();
 }
 
 function renderTable(data) {
@@ -199,11 +245,10 @@ function renderTable(data) {
 
     if (!allColumns.length) {
         theadTr.innerHTML = '<th>تنبيه</th>';
-        document.getElementById('tableBody').innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد بيانات متاحة.</td></tr>';
+        document.getElementById('tableBody').innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد بيانات مطابقة أو الجدول فارغ.</td></tr>';
         return;
     }
 
-    // بناء الهيدر مع حقل بحث مستقل تحت كل عنوان عمود
     allColumns.forEach(col => {
         if (visibleColumns.has(col)) {
             const th = document.createElement('th');
@@ -212,7 +257,6 @@ function renderTable(data) {
             titleDiv.textContent = col;
             th.appendChild(titleDiv);
 
-            // إنشاء خانة بحث خاصة بهذا العمود
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'column-filter';
@@ -238,7 +282,7 @@ function buildColumnCheckboxes() {
     allColumns.forEach(col => {
         const label = document.createElement('label');
         label.style.display = 'flex';
-        label.style.alignItems: 'center';
+        label.style.alignItems = 'center';
         label.style.gap = '8px';
         label.style.fontSize = '0.85rem';
         label.style.cursor = 'pointer';
@@ -288,19 +332,16 @@ function populateRows(data) {
     });
 }
 
-// نظام فلترة متكامل (يشمل البحث العام + فلاتر الأعمدة المخصصة)
 function filterData() {
     const generalQuery = document.getElementById('searchInput').value.toLowerCase();
 
     const filtered = globalData.filter(row => {
-        // 1. فحص البحث العام
         const matchesGeneral = generalQuery === '' || Object.values(row).some(val => 
             String(val).toLowerCase().includes(generalQuery)
         );
 
         if (!matchesGeneral) return false;
 
-        // 2. فحص فلاتر الأعمدة الفردية
         for (let col in columnFilters) {
             const filterVal = columnFilters[col].toLowerCase();
             if (filterVal !== '') {
@@ -317,7 +358,6 @@ function filterData() {
     populateRows(filtered);
 }
 
-// إغلاق قائمة الأعمدة عند النقر خارجها
 window.addEventListener('click', function(e) {
     if (!e.target.closest('.column-selector-wrapper')) {
         document.getElementById('columnMenu').style.display = 'none';
