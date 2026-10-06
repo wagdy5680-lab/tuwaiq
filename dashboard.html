@@ -230,7 +230,7 @@
             border-color: var(--primary);
         }
 
-        /* لوحة إدارية للتحكم بالأعمدة (اختيارية تظهر عند الطلب) */
+        /* لوحة إدارية للتحكم بالأعمدة (محمية برقم سري) */
         .column-toggle-panel {
             background: #f8fafc;
             border: 1px solid var(--border);
@@ -347,7 +347,7 @@
         </div>
         <div class="header-actions">
             <button class="btn-action" onclick="toggleColumnManager()">
-                <i class="fa-solid fa-columns"></i> تخصيص الأعمدة
+                <i class="fa-solid fa-lock"></i> تخصيص الأعمدة (صلاحيات المدير)
             </button>
             <button class="btn-action" onclick="loadViewData()">
                 <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث البيانات
@@ -442,6 +442,13 @@ async function loadViewData() {
         globalData = data;
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
+            
+            // إخفاء أعمدة المرتب وإجمالي المرتب افتراضياً
+            allColumns.forEach(col => {
+                if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي')) {
+                    hiddenColumns.add(col);
+                }
+            });
         }
         
         updateStatistics(data);
@@ -464,7 +471,7 @@ function updateStatistics(data) {
     const companiesSet = new Set();
 
     data.forEach(row => {
-        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي'));
+        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي') || k.includes('اجمالي'));
         const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
 
         if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) {
@@ -504,9 +511,16 @@ function buildColumnManagerUI() {
     });
 }
 
+// دالة التحكم بفتح واجهة الأعمدة المحمية برقم سري
 function toggleColumnManager() {
-    const panel = document.getElementById('columnManagerPanel');
-    panel.classList.toggle('show');
+    const password = prompt('يرجى إدخال الرقم السري للوصول لإدارة الأعمدة:');
+    
+    if (password === 'admin123456') {
+        const panel = document.getElementById('columnManagerPanel');
+        panel.classList.toggle('show');
+    } else if (password !== null) {
+        alert('الرقم السري غير صحيح!');
+    }
 }
 
 // عرض ورسم الجدول بناءً على الأعمدة المتاحة وغير المخفية
