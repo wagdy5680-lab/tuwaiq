@@ -114,17 +114,6 @@
             border-radius: 50%;
         }
 
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -60%;
-            left: 20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
         .brand-section {
             display: flex;
             align-items: center;
@@ -144,7 +133,7 @@
             font-size: 28px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             transition: var(--transition);
         }
 
@@ -157,7 +146,6 @@
             font-weight: 800;
             margin-bottom: 4px;
             letter-spacing: -0.3px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .header p {
@@ -182,6 +170,7 @@
             display: flex;
             gap: 12px;
             align-items: center;
+            flex-wrap: wrap;
             position: relative;
             z-index: 1;
         }
@@ -190,7 +179,7 @@
             background: rgba(255, 255, 255, 0.95);
             color: var(--primary-dark);
             border: none;
-            padding: 11px 20px;
+            padding: 11px 18px;
             border-radius: var(--radius-sm);
             font-weight: 700;
             font-size: 0.88rem;
@@ -211,12 +200,14 @@
             color: var(--primary);
         }
 
-        .btn-action:active {
-            transform: translateY(0);
+        .btn-action.export-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
         }
-
-        .btn-action i {
-            font-size: 1rem;
+        .btn-action.export-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
         }
 
         /* ===== بطاقات الإحصائيات ===== */
@@ -327,42 +318,61 @@
             padding: 18px 22px;
             border-radius: var(--radius);
             display: none;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 12px;
-            align-items: center;
             box-shadow: var(--shadow);
             animation: slideDown 0.3s ease;
         }
 
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .column-toggle-panel.show {
             display: flex;
         }
 
-        .column-toggle-panel > span {
+        .panel-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .column-toggle-panel > span, .panel-header-actions span {
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--primary);
             display: flex;
             align-items: center;
             gap: 8px;
-            white-space: nowrap;
         }
 
-        .column-toggle-panel > span::before {
-            content: '\f1de';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
+        .btn-text {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .btn-text:hover {
+            background: var(--accent-light);
+        }
+
+        .column-checkboxes-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 4px;
         }
 
         .column-toggle-panel label {
@@ -434,10 +444,6 @@
             color: var(--text-main);
         }
 
-        .search-box input::placeholder {
-            color: var(--text-light);
-        }
-
         .search-box input:focus {
             border-color: var(--primary);
             background: white;
@@ -452,10 +458,6 @@
             color: var(--text-light);
             transition: var(--transition);
             pointer-events: none;
-        }
-
-        .search-box:focus-within i {
-            color: var(--primary);
         }
 
         .filter-status {
@@ -521,17 +523,11 @@
 
         .table-responsive::-webkit-scrollbar-track {
             background: var(--border-light);
-            border-radius: 10px;
         }
 
         .table-responsive::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, var(--primary), var(--primary-dark));
             border-radius: 10px;
-            border: 2px solid var(--border-light);
-        }
-
-        .table-responsive::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-darker);
         }
 
         table {
@@ -556,17 +552,12 @@
             text-align: right;
             border-bottom: 2px solid var(--primary);
             font-size: 0.85rem;
-            letter-spacing: 0.2px;
-            position: relative;
-            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
         }
-
-        th:first-child {
-            border-radius: 0 var(--radius) 0 0;
-        }
-
-        th:last-child {
-            border-radius: var(--radius) 0 0 0;
+        th:hover {
+            background: #e2e8f0;
         }
 
         td {
@@ -577,20 +568,8 @@
             transition: var(--transition);
         }
 
-        tbody tr {
-            transition: var(--transition);
-        }
-
         tbody tr:hover {
             background: linear-gradient(90deg, rgba(204, 251, 241, 0.4), rgba(204, 251, 241, 0.1));
-        }
-
-        tbody tr:hover td {
-            color: var(--primary-dark);
-        }
-
-        tbody tr:last-child td {
-            border-bottom: none;
         }
 
         /* شارة الحالة */
@@ -602,7 +581,6 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            letter-spacing: 0.2px;
         }
 
         .badge-status::before {
@@ -617,11 +595,9 @@
             color: #166534;
             border: 1px solid #86efac;
         }
-
         .badge-active::before {
             background: #16a34a;
             box-shadow: 0 0 6px #16a34a;
-            animation: pulse 2s infinite;
         }
 
         .badge-resigned {
@@ -629,15 +605,9 @@
             color: #991b1b;
             border: 1px solid #fca5a5;
         }
-
         .badge-resigned::before {
             background: #dc2626;
             box-shadow: 0 0 6px #dc2626;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
 
         /* حالة فارغة */
@@ -662,7 +632,40 @@
             opacity: 0.5;
         }
 
-        /* ===== التحميل ===== */
+        /* نظام الإشعارات الخفيف (Toast) */
+        .toast-container {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: var(--text-main);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideInLeft 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* شاشة التحميل */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -691,73 +694,14 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ===== الاستجابة ===== */
         @media (max-width: 768px) {
-            body {
-                padding: 14px;
-            }
-
-            .header {
-                padding: 20px;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .header h1 {
-                font-size: 1.2rem;
-            }
-
-            .header-actions {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            .btn-action {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-box {
-                max-width: 100%;
-            }
-
-            .filter-status {
-                justify-content: center;
-            }
-
-            .table-card {
-                height: 500px;
-            }
-
-            th, td {
-                padding: 10px 12px;
-                font-size: 0.8rem;
-            }
-        }
-
-        /* تأثير الظهور للصفوف */
-        @keyframes fadeInRow {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        tbody tr {
-            animation: fadeInRow 0.3s ease forwards;
+            body { padding: 14px; }
+            .header { padding: 20px; flex-direction: column; align-items: flex-start; }
+            .header-actions { width: 100%; flex-direction: column; }
+            .btn-action { width: 100%; justify-content: center; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
         }
     </style>
 </head>
@@ -776,6 +720,9 @@
             </div>
         </div>
         <div class="header-actions">
+            <button class="btn-action export-btn" onclick="exportToCSV()">
+                <i class="fa-solid fa-file-excel"></i> تصدير Excel
+            </button>
             <button class="btn-action" onclick="toggleColumnManager()">
                 <i class="fa-solid fa-sliders"></i> تخصيص الأعمدة
             </button>
@@ -790,7 +737,7 @@
         <div class="stat-card">
             <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
             <div class="stat-info">
-                <span>إجمالي السجلات</span>
+                <span>إجمالي السجلات المعروضة</span>
                 <h3 id="totalRecords">0</h3>
             </div>
         </div>
@@ -810,11 +757,16 @@
         </div>
     </div>
 
-    <!-- لوحة الأعمدة -->
+    <!-- لوحة الأعمدة المتطورة -->
     <div class="column-toggle-panel" id="columnManagerPanel">
-        <span>إظهار / إخفاء الأعمدة</span>
-        <div id="columnCheckboxes" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;">
+        <div class="panel-header-actions">
+            <span><i class="fa-solid fa-sliders"></i> إدارة وإظهار الأعمدة</span>
+            <div>
+                <button class="btn-text" onclick="toggleAllColumns(true)">إظهار الكل</button>
+                <button class="btn-text" onclick="toggleAllColumns(false)">إخفاء الكل</button>
+            </div>
         </div>
+        <div class="column-checkboxes-grid" id="columnCheckboxes"></div>
     </div>
 
     <!-- شريط الأدوات -->
@@ -855,6 +807,9 @@
     </div>
 </div>
 
+<!-- حاوية الإشعارات -->
+<div class="toast-container" id="toastContainer"></div>
+
 <!-- شاشة التحميل -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
@@ -865,6 +820,16 @@ let globalData = [];
 let allColumns = [];
 let hiddenColumns = new Set();
 let currentFilter = 'all';
+
+// عرض إشعار خفيف (Toast)
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-exclamation'}"></i> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
 // جلب البيانات
 async function loadViewData() {
@@ -885,6 +850,7 @@ async function loadViewData() {
         globalData = data;
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
+            // إخفاء أعمدة الرواتب افتراضياً للخصوصية والاحترافية العالية
             allColumns.forEach(col => {
                 if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي')) {
                     hiddenColumns.add(col);
@@ -892,27 +858,27 @@ async function loadViewData() {
             });
         }
         
-        updateStatistics(data);
         buildColumnManagerUI();
-        renderTable(data);
+        filterData(); // يقوم بتحديث الجدول والإحصائيات بناء على الفلاتر والبحث
+        showToast('تم تحديث البيانات بنجاح');
 
     } catch (error) {
         console.error('خطأ:', error);
-        alert('تفاصيل الخطأ: ' + error.message);
+        showToast('فشل جلب البيانات: ' + error.message, 'error');
     } finally {
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
         if (overlay) overlay.classList.remove('show');
     }
 }
 
-// الإحصائيات
-function updateStatistics(data) {
-    document.getElementById('totalRecords').textContent = data.length.toLocaleString();
+// الإحصائيات (تتحدث ديناميكياً مع نتائج البحث والفلترة)
+function updateStatistics(filteredData) {
+    document.getElementById('totalRecords').textContent = filteredData.length.toLocaleString();
 
     let totalSalarySum = 0;
     const companiesSet = new Set();
 
-    data.forEach(row => {
+    filteredData.forEach(row => {
         const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي') || k.includes('اجمالي'));
         const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
 
@@ -944,7 +910,7 @@ function buildColumnManagerUI() {
             } else {
                 hiddenColumns.add(col);
             }
-            renderTable(getFilteredData());
+            filterData();
         };
 
         label.appendChild(checkbox);
@@ -953,16 +919,60 @@ function buildColumnManagerUI() {
     });
 }
 
-// فتح لوحة الأعمدة
-function toggleColumnManager() {
-    const password = prompt('يرجى إدخال الرقم السري للوصول لإدارة الأعمدة:');
-    
-    if (password === 'admin123456') {
-        const panel = document.getElementById('columnManagerPanel');
-        panel.classList.toggle('show');
-    } else if (password !== null) {
-        alert('الرقم السري غير صحيح!');
+// إظهار أو إخفاء كافة الأعمدة دفعة واحدة
+function toggleAllColumns(show) {
+    if (show) {
+        hiddenColumns.clear();
+    } else {
+        allColumns.forEach(col => hiddenColumns.add(col));
     }
+    buildColumnManagerUI();
+    filterData();
+}
+
+// فتح لوحة الأعمدة برمز سري مرن
+function toggleColumnManager() {
+    const panel = document.getElementById('columnManagerPanel');
+    if (!panel.classList.contains('show')) {
+        const password = prompt('يرجى إدخال الرقم السري للوصول لإدارة الأعمدة:');
+        if (password === 'admin123456') {
+            panel.classList.add('show');
+        } else if (password !== null) {
+            showToast('الرقم السري غير صحيح!', 'error');
+        }
+    } else {
+        panel.classList.remove('show');
+    }
+}
+
+// تصدير البيانات المعروضة إلى CSV (Excel)
+function exportToCSV() {
+    const filteredData = getFilteredData();
+    if (filteredData.length === 0) {
+        showToast('لا توجد بيانات للتصدير!', 'error');
+        return;
+    }
+
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
+    let csvContent = "\uFEFF" + visibleColumns.join(",") + "\n";
+
+    filteredData.forEach(row => {
+        const rowData = visibleColumns.map(col => {
+            let val = row[col] !== null && row[col] !== undefined ? String(row[col]) : '';
+            return `"${val.replace(/"/g, '""')}"`;
+        });
+        csvContent += rowData.join(",") + "\n";
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Tuwaiq_Companies_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('تم تصدير التقرير بنجاح');
 }
 
 // عرض الجدول
@@ -993,21 +1003,8 @@ function renderTable(data) {
         theadTr.appendChild(th);
     });
 
-    populateRows(data, visibleColumns);
-}
-
-function populateRows(data, visibleColumns) {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-
-    if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة للبحث أو الفلتر الحالي.</td></tr>';
-        return;
-    }
-
     data.forEach((row, index) => {
         const tr = document.createElement('tr');
-        tr.style.animationDelay = `${Math.min(index * 0.02, 0.5)}s`;
         
         visibleColumns.forEach(col => {
             const td = document.createElement('td');
@@ -1053,8 +1050,8 @@ function getFilteredData() {
 
 function filterData() {
     const filtered = getFilteredData();
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
-    populateRows(filtered, visibleColumns);
+    updateStatistics(filtered);
+    renderTable(filtered);
 }
 
 function setFilter(status, btnElement) {
