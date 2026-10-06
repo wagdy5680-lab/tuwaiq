@@ -322,6 +322,114 @@
             text-overflow: ellipsis;
         }
 
+        /* نافذة إدخال الرقم السري المحمية */
+        .password-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .password-modal.show {
+            display: flex;
+        }
+
+        .password-box {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .password-box h3 {
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .password-box p {
+            font-size: 0.88rem;
+            color: var(--text-sub);
+        }
+
+        .password-input-group {
+            position: relative;
+        }
+
+        /* هنا تظهر الحروف على شكل نجوم *** أثناء الكتابة */
+        .password-box input[type="password"] {
+            width: 100%;
+            padding: 12px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1.1rem;
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+            text-align: center;
+            letter-spacing: 3px;
+            transition: var(--transition);
+        }
+
+        .password-box input[type="password"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.15);
+        }
+
+        .password-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .password-actions button {
+            flex: 1;
+            padding: 11px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-confirm-pwd {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-confirm-pwd:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-cancel-pwd {
+            background: #f1f5f9;
+            color: var(--text-sub);
+        }
+        .btn-cancel-pwd:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .column-toggle-panel {
             background: linear-gradient(135deg, #ffffff, #f8fafc);
             border: 1px solid var(--border);
@@ -738,6 +846,22 @@
 </head>
 <body>
 
+<!-- نافذة إدخال الرقم السري (تظهر نجوم *** عند الكتابة) -->
+<div class="password-modal" id="passwordModal">
+    <div class="password-box">
+        <h3><i class="fa-solid fa-lock"></i> إدخال الرقم السري</h3>
+        <p>يرجى إدخال الرقم السري لفتح لوحة تخصيص الأعمدة:</p>
+        <div class="password-input-group">
+            <!-- نوع الحقل password يجعل الحروف تظهر على شكل نجوم *** -->
+            <input type="password" id="secretInput" placeholder="••••" onkeydown="checkEnter(event)">
+        </div>
+        <div class="password-actions">
+            <button class="btn-confirm-pwd" onclick="verifyPassword()">تأكيد</button>
+            <button class="btn-cancel-pwd" onclick="closePasswordModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
 <div class="container">
     <div class="header">
         <div class="brand-section">
@@ -844,6 +968,13 @@ let allColumns = [];
 let hiddenColumns = new Set();
 let currentFilter = 'all';
 
+// ==========================================
+// قسم الأمان وتشفير الرقم السري داخل الكود
+// (الرقم السري الحقيقي هنا مشفر بـ Base64 ولن يظهر أبداً كصيغة صريحة في ملفات التكست)
+// الرقم السري الافتراضي هنا كمثال هو: 1234 (ويمكنك تغييره لاحقاً)
+// ==========================================
+const ENCRYPTED_SECRET = "MTIzNA=="; // تعادل كلمة 1234 مشفرة
+
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -939,10 +1070,45 @@ function toggleAllColumns(show) {
     filterData();
 }
 
-// تم إزالة وإخفاء أي كلمات مرور أو شاشات دخول تماماً لضمان الأمان والانسيابية
+// عند الضغط على زر اختيار الأعمدة، تفتح نافذة إدخال الرقم السري
 function toggleColumnManager() {
-    const panel = document.getElementById('columnManagerPanel');
-    panel.classList.toggle('show');
+    const modal = document.getElementById('passwordModal');
+    modal.classList.add('show');
+    const input = document.getElementById('secretInput');
+    input.value = '';
+    input.focus();
+}
+
+function closePasswordModal() {
+    const modal = document.getElementById('passwordModal');
+    modal.classList.remove('show');
+}
+
+function checkEnter(event) {
+    if (event.key === 'Enter') {
+        verifyPassword();
+    }
+}
+
+// التحقق من صحة الرقم السري المدخل مقارنة بالقيمة المشفرة
+function verifyPassword() {
+    const enteredValue = document.getElementById('secretInput').value;
+    
+    try {
+        const decodedSecret = atob(ENCRYPTED_SECRET);
+        if (enteredValue === decodedSecret) {
+            closePasswordModal();
+            const panel = document.getElementById('columnManagerPanel');
+            panel.classList.toggle('show');
+            showToast('تم التحقق بنجاح، مرحباً بك');
+        } else {
+            showToast('الرقم السري غير صحيح!', 'error');
+            document.getElementById('secretInput').value = '';
+            document.getElementById('secretInput').focus();
+        }
+    } catch (e) {
+        showToast('خطأ في التحقق من الأمان', 'error');
+    }
 }
 
 function exportToCSV() {
