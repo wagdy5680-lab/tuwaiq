@@ -225,7 +225,7 @@
             font-size: 1rem;
         }
 
-        /* ===== بطاقات الإحصائيات (تم تقليصها لبطاقتين) ===== */
+        /* ===== بطاقات الإحصائيات ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -790,7 +790,7 @@
         </div>
     </div>
 
-    <!-- الإحصائيات (بدون إجمالي الرواتب) -->
+    <!-- الإحصائيات -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
@@ -861,21 +861,8 @@
 <script>
 let globalData = [];
 let allColumns = [];
-let hiddenColumns = new Set();
+let hiddenColumns = new Set(); // تبدأ فارغة تماماً لضمان ظهور كافة الحقول
 let currentFilter = 'all';
-
-// دالة التحقق مما إذا كان العمود متعلقاً بالرواتب أو الأجور لإخفائه تلقائياً
-function isSalaryRelatedColumn(colName) {
-    const lower = colName.toLowerCase();
-    return lower.includes('الراتب') || 
-           lower.includes('راتب') || 
-           lower.includes('salary') || 
-           lower.includes('إجمالي') || 
-           lower.includes('اجمالي') || 
-           lower.includes('أجر') || 
-           lower.includes('اجر') || 
-           lower.includes('مبلغ');
-}
 
 // جلب البيانات
 async function loadViewData() {
@@ -896,12 +883,7 @@ async function loadViewData() {
         globalData = data;
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
-            // إخفاء أعمدة الرواتب تلقائياً منذ البداية
-            allColumns.forEach(col => {
-                if (isSalaryRelatedColumn(col)) {
-                    hiddenColumns.add(col);
-                }
-            });
+            // لا يتم إخفاء أي عمود افتراضياً، جميع الأعمدة تظهر مباشرة
         }
         
         updateStatistics(data);
@@ -917,14 +899,14 @@ async function loadViewData() {
     }
 }
 
-// الإحصائيات (بدون حساب الرواتب)
+// الإحصائيات
 function updateStatistics(data) {
     document.getElementById('totalRecords').textContent = data.length.toLocaleString();
 
     const companiesSet = new Set();
 
     data.forEach(row => {
-        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
+        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.toLowerCase().includes('company'));
         if (companyKey && row[companyKey]) {
             companiesSet.add(row[companyKey]);
         }
@@ -933,15 +915,12 @@ function updateStatistics(data) {
     document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
 }
 
-// بناء لوحة الأعمدة (استبعاد أعمدة الرواتب تماماً أو قفلها على الإخفاء)
+// بناء لوحة الأعمدة
 function buildColumnManagerUI() {
     const container = document.getElementById('columnCheckboxes');
     container.innerHTML = '';
 
     allColumns.forEach(col => {
-        // تجاهل عرض أعمدة الرواتب في لوحة التخصيص نهائياً
-        if (isSalaryRelatedColumn(col)) return;
-
         const label = document.createElement('label');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -973,7 +952,7 @@ function toggleColumnManager() {
     }
 }
 
-// عرض الجدول (مع منع عرض أي عمود رواتب حتى لو لم يتم رصده مسبقاً)
+// عرض الجدول
 function renderTable(data) {
     const theadTr = document.getElementById('tableHeaders');
     const tbody = document.getElementById('tableBody');
@@ -987,7 +966,7 @@ function renderTable(data) {
         return;
     }
 
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
 
     if (visibleColumns.length === 0) {
         theadTr.innerHTML = '<th>تنبيه</th>';
@@ -1045,10 +1024,9 @@ function getFilteredData() {
     const query = document.getElementById('searchInput').value.toLowerCase();
 
     return globalData.filter(row => {
-        const matchesSearch = Object.entries(row).some(([key, val]) => {
-            if (isSalaryRelatedColumn(key)) return false; // تجاهل حقول الرواتب تماماً أثناء البحث
-            return String(val).toLowerCase().includes(query);
-        });
+        const matchesSearch = Object.values(row).some(val => 
+            String(val).toLowerCase().includes(query)
+        );
 
         let matchesStatus = true;
         if (currentFilter !== 'all') {
@@ -1062,7 +1040,7 @@ function getFilteredData() {
 
 function filterData() {
     const filtered = getFilteredData();
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
     populateRows(filtered, visibleColumns);
 }
 
@@ -1073,7 +1051,7 @@ function setFilter(status, btnElement) {
     filterData();
 }
 
-// دالة تصدير البيانات إلى Excel (باستبعاد أعمدة الرواتب)
+// دالة تصدير البيانات إلى Excel
 function exportToExcel() {
     const filteredData = getFilteredData();
     if (!filteredData || filteredData.length === 0) {
@@ -1081,7 +1059,7 @@ function exportToExcel() {
         return;
     }
 
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
     
     const excelData = filteredData.map(row => {
         let cleanRow = {};
@@ -1102,7 +1080,7 @@ function exportToExcel() {
     XLSX.writeFile(workbook, "Tuwaiq_Companies_Report.xlsx");
 }
 
-// دالة تصدير البيانات إلى PDF (باستبعاد أعمدة الرواتب)
+// دالة تصدير البيانات إلى PDF
 function exportToPDF() {
     const filteredData = getFilteredData();
     if (!filteredData || filteredData.length === 0) {
@@ -1113,7 +1091,7 @@ function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
 
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col) && !isSalaryRelatedColumn(col));
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
     
     const tableHeaders = visibleColumns;
     const tableRows = filteredData.map(row => {
