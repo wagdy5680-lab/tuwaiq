@@ -19,6 +19,7 @@ const pool = new Pool({
   }
 });
 
+// السماح بقراءة الملفات الثابتة من المجلد الحالي
 app.use(express.static(path.join(__dirname)));
 
 // مسار لجلب قائمة جميع الجداول والفيوز المتاحة في قاعدة البيانات
@@ -56,10 +57,24 @@ app.get('/api/get-data', async (req, res) => {
   }
 });
 
+// --- مسارات الصفحات المتعددة لمنع خطأ Cannot GET ---
+
+// 1. مسار الصفحة الرئيسية (البوابة)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// 2. مسار صفحة لوحة التحكم
+app.get('/dashboard.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
+// 3. مسار إضافي لأي صفحة مستقبلية (مثال: صفحة التقارير أو الإعدادات)
+app.get('/settings.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'settings.html'));
+});
+
+// تشغيل السيرفر
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
