@@ -6,33 +6,79 @@
     <title>جمعية طويق لصناعة الكوادر البشرية - تقرير الشركات الشامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- مكتبات التصدير -->
+    
+    <!-- مكتبات التصدير (Excel & PDF) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/plugin.min.js"></script>
 
     <style>
         :root {
-            --primary: #0f766e;
-            --primary-dark: #115e59;
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-darker: #115e59;
             --accent: #2dd4bf;
-            --bg-main: #f1f5f9;
+            --accent-light: #ccfbf1;
+            --bg-main: #f0f4f8;
+            --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #e8f0f8 100%);
             --card-bg: #ffffff;
-            --text-main: #1e293b;
+            --text-main: #0f172a;
             --text-sub: #64748b;
+            --text-light: #94a3b8;
             --border: #e2e8f0;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --border-light: #f1f5f9;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow: 0 8px 20px -6px rgba(13, 148, 136, 0.12), 0 4px 8px -4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 40px -12px rgba(13, 148, 136, 0.18), 0 8px 16px -8px rgba(0, 0, 0, 0.08);
+            --radius-sm: 8px;
+            --radius: 14px;
+            --radius-lg: 20px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-main);
+            background: var(--bg-gradient);
             color: var(--text-main);
-            padding: 25px 20px;
+            padding: 24px;
             min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(45, 212, 191, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
@@ -40,122 +86,283 @@
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 22px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* الهيدر */
+        /* ===== الهيدر الفاخر ===== */
         .header {
-            background: linear-gradient(135deg, #0f766e, #134e4a);
+            background: linear-gradient(135deg, #0f766e 0%, #134e4a 50%, #0c4a42 100%);
             color: white;
-            padding: 25px 35px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+            padding: 28px 36px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(45, 212, 191, 0.2);
         }
 
-        .brand-section { display: flex; align-items: center; gap: 15px; }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(45, 212, 191, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -60%;
+            left: 20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
 
         .brand-icon {
-            width: 55px; height: 55px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 14px;
+            width: 62px;
+            height: 62px;
+            background: linear-gradient(135deg, rgba(45, 212, 191, 0.25), rgba(45, 212, 191, 0.1));
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            backdrop-filter: blur(5px);
+            font-size: 28px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
         }
 
-        .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
-        .header p { font-size: 0.9rem; opacity: 0.85; }
+        .brand-icon:hover {
+            transform: scale(1.05) rotate(-5deg);
+        }
+
+        .header h1 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header p::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent);
+        }
 
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
 
         .btn-action {
-            background: white;
-            color: var(--primary);
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--primary-dark);
             border: none;
-            padding: 10px 18px;
-            border-radius: 10px;
+            padding: 11px 18px;
+            border-radius: var(--radius-sm);
             font-weight: 700;
             font-size: 0.85rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             font-family: 'Cairo', sans-serif;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .btn-action:hover {
-            background: #f8fafc;
+            background: white;
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            color: var(--primary);
         }
 
-        /* الإحصائيات */
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        .btn-action i {
+            font-size: 1rem;
+        }
+
+        /* ===== بطاقات الإحصائيات ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
         }
 
         .stat-card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 14px;
+            padding: 22px 24px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            border-radius: 0 4px 4px 0;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(13, 148, 136, 0.15);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
         }
 
         .stat-icon {
-            width: 48px; height: 48px;
-            border-radius: 12px;
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
+            flex-shrink: 0;
+            transition: var(--transition);
         }
 
-        .stat-icon.green { background: #ccfbf1; color: #0f766e; }
-        .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
-        .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(-8deg);
+        }
 
-        .stat-info span { font-size: 0.82rem; color: var(--text-sub); font-weight: 600; }
-        .stat-info h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-top: 2px; }
+        .stat-icon.green {
+            background: linear-gradient(135deg, #ccfbf1, #99f6e4);
+            color: #0f766e;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
+        }
 
-        /* لوحة تخصيص الأعمدة */
+        .stat-icon.purple {
+            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+            color: #9333ea;
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.15);
+        }
+
+        .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-info span {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-info h3 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== لوحة إدارة الأعمدة ===== */
         .column-toggle-panel {
-            background: #f8fafc;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
             border: 1px solid var(--border);
-            padding: 15px 20px;
-            border-radius: 12px;
+            padding: 18px 22px;
+            border-radius: var(--radius);
             display: none;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             box-shadow: var(--shadow);
+            animation: slideDown 0.3s ease;
         }
 
-        .column-toggle-panel.show { display: flex; }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .column-toggle-panel.show {
+            display: flex;
+        }
 
         .column-toggle-panel > span {
             font-size: 0.9rem;
             font-weight: 700;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
             white-space: nowrap;
+        }
+
+        .column-toggle-panel > span::before {
+            content: '\f1de';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
         }
 
         .column-toggle-panel label {
@@ -163,34 +370,43 @@
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             background: white;
-            padding: 6px 12px;
+            padding: 7px 14px;
             border: 1px solid var(--border);
             border-radius: 20px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
+            user-select: none;
             color: var(--text-sub);
         }
 
         .column-toggle-panel label:hover {
             border-color: var(--primary);
             color: var(--primary);
+            background: var(--accent-light);
         }
 
         .column-toggle-panel label input[type="checkbox"] {
             accent-color: var(--primary);
-            width: 15px; height: 15px;
+            width: 15px;
+            height: 15px;
             cursor: pointer;
         }
 
-        /* شريط البحث والفلترة */
+        .column-toggle-panel label:has(input:checked) {
+            background: var(--accent-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        /* ===== شريط الأدوات ===== */
         .toolbar {
             background: var(--card-bg);
-            padding: 15px 25px;
-            border-radius: 14px;
+            padding: 16px 24px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -198,24 +414,34 @@
             gap: 15px;
         }
 
-        .search-box { position: relative; flex: 1; min-width: 280px; }
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+            max-width: 500px;
+        }
 
         .search-box input {
             width: 100%;
-            padding: 11px 18px 11px 45px;
-            border: 1px solid var(--border);
+            padding: 12px 46px 12px 18px;
+            border: 1.5px solid var(--border);
             border-radius: 10px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             outline: none;
             font-family: 'Cairo', sans-serif;
             background: #f8fafc;
-            transition: all 0.3s;
+            transition: var(--transition);
+            color: var(--text-main);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-light);
         }
 
         .search-box input:focus {
             border-color: var(--primary);
             background: white;
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1);
         }
 
         .search-box i {
@@ -223,87 +449,314 @@
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-sub);
+            color: var(--text-light);
+            transition: var(--transition);
+            pointer-events: none;
         }
 
-        .filter-status { display: flex; gap: 8px; }
+        .search-box:focus-within i {
+            color: var(--primary);
+        }
+
+        .filter-status {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: #f8fafc;
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
 
         .filter-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: white;
+            padding: 8px 18px;
+            border-radius: 7px;
+            border: none;
+            background: transparent;
             cursor: pointer;
             font-family: 'Cairo', sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.85rem;
             color: var(--text-sub);
-            transition: all 0.2s;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--primary);
+        .filter-btn:hover {
+            color: var(--primary);
+            background: rgba(13, 148, 136, 0.08);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
         }
 
-        /* الجدول */
+        /* ===== الجدول ===== */
         .table-card {
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-light);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 620px;
+            height: 640px;
         }
 
-        .table-responsive { flex: 1; overflow: auto; }
+        .table-responsive {
+            flex: 1;
+            overflow: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--border-light);
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: var(--border-light);
+            border-radius: 10px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            border: 2px solid var(--border-light);
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-darker);
+        }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             white-space: nowrap;
             font-size: 0.88rem;
         }
 
-        thead { position: sticky; top: 0; z-index: 10; }
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
 
         th {
-            background: #f8fafc;
-            color: var(--text-sub);
-            font-weight: 700;
-            padding: 15px 16px;
+            background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+            color: var(--primary-dark);
+            font-weight: 800;
+            padding: 16px 18px;
             text-align: right;
-            border-bottom: 2px solid var(--border);
-            border-left: 1px solid #f1f5f9;
+            border-bottom: 2px solid var(--primary);
+            font-size: 0.85rem;
+            letter-spacing: 0.2px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        th:first-child {
+            border-radius: 0 var(--radius) 0 0;
+        }
+
+        th:last-child {
+            border-radius: var(--radius) 0 0 0;
         }
 
         td {
-            padding: 13px 16px;
-            border-bottom: 1px solid var(--border);
-            border-left: 1px solid #f8fafc;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-light);
             color: var(--text-main);
+            font-weight: 500;
+            transition: var(--transition);
         }
 
-        tbody tr { transition: background 0.15s; }
-        tbody tr:hover { background-color: #f0fdfa; }
+        tbody tr {
+            transition: var(--transition);
+        }
 
+        tbody tr:hover {
+            background: linear-gradient(90deg, rgba(204, 251, 241, 0.4), rgba(204, 251, 241, 0.1));
+        }
+
+        tbody tr:hover td {
+            color: var(--primary-dark);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* شارة الحالة */
         .badge-status {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            letter-spacing: 0.2px;
         }
-        .badge-active { background: #dcfce7; color: #166534; }
-        .badge-resigned { background: #fee2e2; color: #991b1b; }
 
+        .badge-status::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .badge-active {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .badge-active::before {
+            background: #16a34a;
+            box-shadow: 0 0 6px #16a34a;
+            animation: pulse 2s infinite;
+        }
+
+        .badge-resigned {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .badge-resigned::before {
+            background: #dc2626;
+            box-shadow: 0 0 6px #dc2626;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* حالة فارغة */
         .empty-state {
             text-align: center;
-            padding: 60px;
+            padding: 70px 30px;
             color: var(--text-sub);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .empty-state::before {
+            content: '\f15b';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 3rem;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        /* ===== التحميل ===== */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(240, 244, 248, 0.85);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== الاستجابة ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 14px;
+            }
+
+            .header {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .filter-status {
+                justify-content: center;
+            }
+
+            .table-card {
+                height: 500px;
+            }
+
+            th, td {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @keyframes fadeInRow {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        tbody tr {
+            animation: fadeInRow 0.3s ease forwards;
         }
     </style>
 </head>
@@ -323,10 +776,10 @@
         </div>
         <div class="header-actions">
             <button class="btn-action" onclick="exportToExcel()">
-                <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> تصدير Excel
+                <i class="fa-solid fa-file-excel" style="color: #4ade80;"></i> تصدير Excel
             </button>
             <button class="btn-action" onclick="exportToPDF()">
-                <i class="fa-solid fa-file-pdf" style="color: #dc2626;"></i> تصدير PDF
+                <i class="fa-solid fa-file-pdf" style="color: #f87171;"></i> تصدير PDF
             </button>
             <button class="btn-action" onclick="toggleColumnManager()">
                 <i class="fa-solid fa-sliders"></i> تخصيص الأعمدة
@@ -347,13 +800,6 @@
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon blue"><i class="fa-solid fa-money-bill-wave"></i></div>
-            <div class="stat-info">
-                <span>إجمالي الرواتب الكلية</span>
-                <h3 id="totalSumSalary">0.00 ر.س</h3>
-            </div>
-        </div>
-        <div class="stat-card">
             <div class="stat-icon purple"><i class="fa-solid fa-city"></i></div>
             <div class="stat-info">
                 <span>عدد الشركات المدرجة</span>
@@ -362,22 +808,29 @@
         </div>
     </div>
 
-    <!-- لوحة تخصيص الأعمدة (محمية برقم سري) -->
+    <!-- لوحة الأعمدة -->
     <div class="column-toggle-panel" id="columnManagerPanel">
-        <span>إظهار/إخفاء الأعمدة:</span>
-        <div id="columnCheckboxes" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;"></div>
+        <span>إظهار / إخفاء الأعمدة</span>
+        <div id="columnCheckboxes" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;">
+        </div>
     </div>
 
-    <!-- شريط البحث -->
+    <!-- شريط الأدوات -->
     <div class="toolbar">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="بحث بالاسم، رقم السجل، أو اسم الشركة..." onkeyup="filterData()">
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
         <div class="filter-status">
-            <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
-            <button class="filter-btn" onclick="setFilter('موظف', this)">الموظفون</button>
-            <button class="filter-btn" onclick="setFilter('مستقيل', this)">المستقيلون</button>
+            <button class="filter-btn active" onclick="setFilter('all', this)">
+                <i class="fa-solid fa-layer-group"></i> الكل
+            </button>
+            <button class="filter-btn" onclick="setFilter('موظف', this)">
+                <i class="fa-solid fa-user-check"></i> الموظفون
+            </button>
+            <button class="filter-btn" onclick="setFilter('مستقيل', this)">
+                <i class="fa-solid fa-user-xmark"></i> المستقيلون
+            </button>
         </div>
     </div>
 
@@ -400,47 +853,25 @@
     </div>
 </div>
 
+<!-- شاشة التحميل -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+</div>
+
 <script>
-// ============================================================
-// المتغيرات العامة
-// ============================================================
 let globalData = [];
 let allColumns = [];
-let hiddenColumns = new Set();  // الأعمدة المخفية بواسطة المستخدم
+let hiddenColumns = new Set(); // تبدأ فارغة تماماً لضمان ظهور كافة الحقول
 let currentFilter = 'all';
 
-// ============================================================
-// 🔒 دالة كشف الحقول المالية (المرتبات، البدلات، الخصومات...)
-// ============================================================
-function isSalaryColumn(colName) {
-    if (!colName) return false;
-    const name = String(colName).trim();
-    
-    const keywords = [
-        'راتب', 'رواتب', 'مرتب', 'مرتبات',
-        'salary', 'wages', 'wage',
-        'أجر', 'اجر', 'أجور', 'اجور',
-        'بدل', 'بدلات', 'allowance',
-        'مبلغ', 'مبالغ', 'amount',
-        'إجمالي', 'اجمالي',
-        'خصم', 'خصومات', 'deduction',
-        'مكافأة', 'مكافآت', 'bonus',
-        'تعويض', 'compensation',
-        'تأمين', 'تأمينات', 'insurance', 'gosi',
-        'ريال', 'sar'
-    ];
-    
-    const lower = name.toLowerCase();
-    return keywords.some(kw => lower.includes(kw));
-}
-
-// ============================================================
-// جلب البيانات من الـ API
-// ============================================================
+// جلب البيانات
 async function loadViewData() {
     const refreshIcon = document.getElementById('refreshIcon');
+    const overlay = document.getElementById('loadingOverlay');
+    
     try {
         if (refreshIcon) refreshIcon.classList.add('fa-spin');
+        if (overlay) overlay.classList.add('show');
 
         const response = await fetch('/api/get-data?name=بحث_شامل_الشركات');
         const data = await response.json();
@@ -450,18 +881,9 @@ async function loadViewData() {
         }
 
         globalData = data;
-        hiddenColumns = new Set();
-        allColumns = [];
-        
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
-            
-            // 🔒 إخفاء أعمدة المرتبات تلقائياً
-            allColumns.forEach(col => {
-                if (isSalaryColumn(col)) {
-                    hiddenColumns.add(col);
-                }
-            });
+            // لا يتم إخفاء أي عمود افتراضياً، جميع الأعمدة تظهر مباشرة
         }
         
         updateStatistics(data);
@@ -473,45 +895,32 @@ async function loadViewData() {
         alert('تفاصيل الخطأ: ' + error.message);
     } finally {
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+        if (overlay) overlay.classList.remove('show');
     }
 }
 
-// ============================================================
-// الإحصائيات العلوية
-// ============================================================
+// الإحصائيات
 function updateStatistics(data) {
     document.getElementById('totalRecords').textContent = data.length.toLocaleString();
 
-    let totalSalarySum = 0;
     const companiesSet = new Set();
 
     data.forEach(row => {
-        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي'));
-        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
-
-        if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) {
-            totalSalarySum += parseFloat(row[salaryKey]);
-        }
+        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.toLowerCase().includes('company'));
         if (companyKey && row[companyKey]) {
             companiesSet.add(row[companyKey]);
         }
     });
 
-    document.getElementById('totalSumSalary').textContent = totalSalarySum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ر.س';
     document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
 }
 
-// ============================================================
-// بناء لوحة تخصيص الأعمدة
-// ============================================================
+// بناء لوحة الأعمدة
 function buildColumnManagerUI() {
     const container = document.getElementById('columnCheckboxes');
     container.innerHTML = '';
 
     allColumns.forEach(col => {
-        // استبعاد الأعمدة المالية من لوحة التحكم
-        if (isSalaryColumn(col)) return;
-
         const label = document.createElement('label');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -531,9 +940,7 @@ function buildColumnManagerUI() {
     });
 }
 
-// ============================================================
-// فتح لوحة تخصيص الأعمدة (محمية بكلمة سر)
-// ============================================================
+// فتح لوحة الأعمدة
 function toggleColumnManager() {
     const password = prompt('يرجى إدخال الرقم السري للوصول لإدارة الأعمدة:');
     
@@ -545,9 +952,7 @@ function toggleColumnManager() {
     }
 }
 
-// ============================================================
 // عرض الجدول
-// ============================================================
 function renderTable(data) {
     const theadTr = document.getElementById('tableHeaders');
     const tbody = document.getElementById('tableBody');
@@ -561,25 +966,20 @@ function renderTable(data) {
         return;
     }
 
-    // 🔒 الأعمدة المرئية (غير المخفية + غير المالية)
-    const visibleColumns = allColumns.filter(col => 
-        !hiddenColumns.has(col) && !isSalaryColumn(col)
-    );
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
 
     if (visibleColumns.length === 0) {
         theadTr.innerHTML = '<th>تنبيه</th>';
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">تم إخفاء كافة الأعمدة.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">تم إخفاء كافة الأعمدة. يرجى إظهار بعض الأعمدة من قائمة "تخصيص الأعمدة".</td></tr>';
         return;
     }
 
-    // الترويسة
     visibleColumns.forEach(col => {
         const th = document.createElement('th');
         th.textContent = col;
         theadTr.appendChild(th);
     });
 
-    // الصفوف
     populateRows(data, visibleColumns);
 }
 
@@ -592,8 +992,10 @@ function populateRows(data, visibleColumns) {
         return;
     }
 
-    data.forEach(row => {
+    data.forEach((row, index) => {
         const tr = document.createElement('tr');
+        tr.style.animationDelay = `${Math.min(index * 0.02, 0.5)}s`;
+        
         visibleColumns.forEach(col => {
             const td = document.createElement('td');
             let val = row[col];
@@ -608,7 +1010,7 @@ function populateRows(data, visibleColumns) {
                 span.textContent = val;
                 td.appendChild(span);
             } else {
-                td.textContent = val !== null && val !== undefined ? val : '';
+                td.textContent = val !== null && val !== undefined ? val : '—';
             }
 
             tr.appendChild(td);
@@ -617,9 +1019,7 @@ function populateRows(data, visibleColumns) {
     });
 }
 
-// ============================================================
 // تصفية البيانات
-// ============================================================
 function getFilteredData() {
     const query = document.getElementById('searchInput').value.toLowerCase();
 
@@ -640,9 +1040,7 @@ function getFilteredData() {
 
 function filterData() {
     const filtered = getFilteredData();
-    const visibleColumns = allColumns.filter(col => 
-        !hiddenColumns.has(col) && !isSalaryColumn(col)
-    );
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
     populateRows(filtered, visibleColumns);
 }
 
@@ -653,9 +1051,7 @@ function setFilter(status, btnElement) {
     filterData();
 }
 
-// ============================================================
-// 📤 تصدير Excel (مع استبعاد الأعمدة المالية)
-// ============================================================
+// دالة تصدير البيانات إلى Excel
 function exportToExcel() {
     const filteredData = getFilteredData();
     if (!filteredData || filteredData.length === 0) {
@@ -663,12 +1059,10 @@ function exportToExcel() {
         return;
     }
 
-    const visibleColumns = allColumns.filter(col => 
-        !hiddenColumns.has(col) && !isSalaryColumn(col)
-    );
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
     
     const excelData = filteredData.map(row => {
-        const cleanRow = {};
+        let cleanRow = {};
         visibleColumns.forEach(col => {
             let val = row[col];
             if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
@@ -682,12 +1076,11 @@ function exportToExcel() {
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "تقرير الشركات");
+
     XLSX.writeFile(workbook, "Tuwaiq_Companies_Report.xlsx");
 }
 
-// ============================================================
-// 📤 تصدير PDF (مع استبعاد الأعمدة المالية)
-// ============================================================
+// دالة تصدير البيانات إلى PDF
 function exportToPDF() {
     const filteredData = getFilteredData();
     if (!filteredData || filteredData.length === 0) {
@@ -698,9 +1091,7 @@ function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4');
 
-    const visibleColumns = allColumns.filter(col => 
-        !hiddenColumns.has(col) && !isSalaryColumn(col)
-    );
+    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
     
     const tableHeaders = visibleColumns;
     const tableRows = filteredData.map(row => {
@@ -714,23 +1105,20 @@ function exportToPDF() {
     });
 
     doc.setFont("helvetica", "normal");
-    doc.text("Tuwaiq Association - Companies Report", 14, 15);
+    doc.text("Tuwaiq Association - Companies Comprehensive Report", 14, 15);
 
     doc.autoTable({
         head: [tableHeaders],
         body: tableRows,
         startY: 22,
         styles: { font: 'helvetica', fontSize: 8, halign: 'right' },
-        headStyles: { fillColor: [15, 118, 110] },
+        headStyles: { fillColor: [13, 148, 136] },
         theme: 'grid'
     });
 
     doc.save("Tuwaiq_Companies_Report.pdf");
 }
 
-// ============================================================
-// التحميل التلقائي
-// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     loadViewData();
 });
