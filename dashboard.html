@@ -6,12 +6,6 @@
     <title>جمعية طويق لصناعة الكوادر البشرية - تقرير الشركات الشامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- مكتبات التصدير (Excel & PDF) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/plugin.min.js"></script>
-
     <style>
         :root {
             --primary: #0d9488;
@@ -55,6 +49,7 @@
             line-height: 1.6;
         }
 
+        /* خلفية زخرفية */
         body::before {
             content: '';
             position: fixed;
@@ -187,7 +182,6 @@
             display: flex;
             gap: 12px;
             align-items: center;
-            flex-wrap: wrap;
             position: relative;
             z-index: 1;
         }
@@ -196,10 +190,10 @@
             background: rgba(255, 255, 255, 0.95);
             color: var(--primary-dark);
             border: none;
-            padding: 11px 18px;
+            padding: 11px 20px;
             border-radius: var(--radius-sm);
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -228,7 +222,7 @@
         /* ===== بطاقات الإحصائيات ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 18px;
         }
 
@@ -289,6 +283,12 @@
             background: linear-gradient(135deg, #ccfbf1, #99f6e4);
             color: #0f766e;
             box-shadow: 0 4px 12px rgba(15, 118, 110, 0.15);
+        }
+
+        .stat-icon.blue {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            color: #0284c7;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
         }
 
         .stat-icon.purple {
@@ -744,6 +744,7 @@
             }
         }
 
+        /* تأثير الظهور للصفوف */
         @keyframes fadeInRow {
             from {
                 opacity: 0;
@@ -775,12 +776,6 @@
             </div>
         </div>
         <div class="header-actions">
-            <button class="btn-action" onclick="exportToExcel()">
-                <i class="fa-solid fa-file-excel" style="color: #4ade80;"></i> تصدير Excel
-            </button>
-            <button class="btn-action" onclick="exportToPDF()">
-                <i class="fa-solid fa-file-pdf" style="color: #f87171;"></i> تصدير PDF
-            </button>
             <button class="btn-action" onclick="toggleColumnManager()">
                 <i class="fa-solid fa-sliders"></i> تخصيص الأعمدة
             </button>
@@ -797,6 +792,13 @@
             <div class="stat-info">
                 <span>إجمالي السجلات</span>
                 <h3 id="totalRecords">0</h3>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <div class="stat-info">
+                <span>إجمالي الرواتب الكلية</span>
+                <h3 id="totalSumSalary">0.00 ر.س</h3>
             </div>
         </div>
         <div class="stat-card">
@@ -861,7 +863,7 @@
 <script>
 let globalData = [];
 let allColumns = [];
-let hiddenColumns = new Set(); // تبدأ فارغة تماماً لضمان ظهور كافة الحقول
+let hiddenColumns = new Set();
 let currentFilter = 'all';
 
 // جلب البيانات
@@ -883,7 +885,11 @@ async function loadViewData() {
         globalData = data;
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
-            // لا يتم إخفاء أي عمود افتراضياً، جميع الأعمدة تظهر مباشرة
+            allColumns.forEach(col => {
+                if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي')) {
+                    hiddenColumns.add(col);
+                }
+            });
         }
         
         updateStatistics(data);
@@ -903,15 +909,22 @@ async function loadViewData() {
 function updateStatistics(data) {
     document.getElementById('totalRecords').textContent = data.length.toLocaleString();
 
+    let totalSalarySum = 0;
     const companiesSet = new Set();
 
     data.forEach(row => {
-        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.toLowerCase().includes('company'));
+        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي') || k.includes('اجمالي'));
+        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
+
+        if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) {
+            totalSalarySum += parseFloat(row[salaryKey]);
+        }
         if (companyKey && row[companyKey]) {
             companiesSet.add(row[companyKey]);
         }
     });
 
+    document.getElementById('totalSumSalary').textContent = totalSalarySum.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ر.س';
     document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
 }
 
@@ -1049,74 +1062,6 @@ function setFilter(status, btnElement) {
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     filterData();
-}
-
-// دالة تصدير البيانات إلى Excel
-function exportToExcel() {
-    const filteredData = getFilteredData();
-    if (!filteredData || filteredData.length === 0) {
-        alert('لا توجد بيانات لتصديرها!');
-        return;
-    }
-
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
-    
-    const excelData = filteredData.map(row => {
-        let cleanRow = {};
-        visibleColumns.forEach(col => {
-            let val = row[col];
-            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
-                val = val.split('T')[0];
-            }
-            cleanRow[col] = val !== null && val !== undefined ? val : '';
-        });
-        return cleanRow;
-    });
-
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "تقرير الشركات");
-
-    XLSX.writeFile(workbook, "Tuwaiq_Companies_Report.xlsx");
-}
-
-// دالة تصدير البيانات إلى PDF
-function exportToPDF() {
-    const filteredData = getFilteredData();
-    if (!filteredData || filteredData.length === 0) {
-        alert('لا توجد بيانات لتصديرها!');
-        return;
-    }
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4');
-
-    const visibleColumns = allColumns.filter(col => !hiddenColumns.has(col));
-    
-    const tableHeaders = visibleColumns;
-    const tableRows = filteredData.map(row => {
-        return visibleColumns.map(col => {
-            let val = row[col];
-            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
-                val = val.split('T')[0];
-            }
-            return val !== null && val !== undefined ? String(val) : '';
-        });
-    });
-
-    doc.setFont("helvetica", "normal");
-    doc.text("Tuwaiq Association - Companies Comprehensive Report", 14, 15);
-
-    doc.autoTable({
-        head: [tableHeaders],
-        body: tableRows,
-        startY: 22,
-        styles: { font: 'helvetica', fontSize: 8, halign: 'right' },
-        headStyles: { fillColor: [13, 148, 136] },
-        theme: 'grid'
-    });
-
-    doc.save("Tuwaiq_Companies_Report.pdf");
 }
 
 document.addEventListener('DOMContentLoaded', () => {
