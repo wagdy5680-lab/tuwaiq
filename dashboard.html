@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>جمعية طويق لصناعة الكوادر البشرية - تقرير الشركات الشامل</title>
-    <!-- خط Cairo العصري -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -21,11 +19,7 @@
             --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Cairo', sans-serif;
@@ -43,7 +37,6 @@
             gap: 20px;
         }
 
-        /* الهيدر الفاخر */
         .header {
             background: linear-gradient(135deg, #0f766e, #134e4a);
             color: white;
@@ -57,15 +50,10 @@
             gap: 20px;
         }
 
-        .brand-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .brand-section { display: flex; align-items: center; gap: 15px; }
 
         .brand-icon {
-            width: 55px;
-            height: 55px;
+            width: 55px; height: 55px;
             background: rgba(255, 255, 255, 0.15);
             border-radius: 14px;
             display: flex;
@@ -75,22 +63,10 @@
             backdrop-filter: blur(5px);
         }
 
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
+        .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+        .header p { font-size: 0.9rem; opacity: 0.85; }
 
-        .header p {
-            font-size: 0.9rem;
-            opacity: 0.85;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
 
         .btn-refresh {
             background: white;
@@ -109,12 +85,8 @@
             font-family: 'Cairo', sans-serif;
         }
 
-        .btn-refresh:hover {
-            background: #f8fafc;
-            transform: translateY(-2px);
-        }
+        .btn-refresh:hover { background: #f8fafc; transform: translateY(-2px); }
 
-        /* بطاقات الإحصائيات السريعة (KPIs) */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -133,8 +105,7 @@
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
+            width: 48px; height: 48px;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -146,20 +117,9 @@
         .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
         .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
 
-        .stat-info span {
-            font-size: 0.82rem;
-            color: var(--text-sub);
-            font-weight: 600;
-        }
+        .stat-info span { font-size: 0.82rem; color: var(--text-sub); font-weight: 600; }
+        .stat-info h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-top: 2px; }
 
-        .stat-info h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-top: 2px;
-        }
-
-        /* شريط البحث والفلترة */
         .toolbar {
             background: var(--card-bg);
             padding: 15px 25px;
@@ -173,11 +133,7 @@
             gap: 15px;
         }
 
-        .search-box {
-            position: relative;
-            flex: 1;
-            min-width: 280px;
-        }
+        .search-box { position: relative; flex: 1; min-width: 280px; }
 
         .search-box input {
             width: 100%;
@@ -205,10 +161,7 @@
             color: var(--text-sub);
         }
 
-        .filter-status {
-            display: flex;
-            gap: 8px;
-        }
+        .filter-status { display: flex; gap: 8px; }
 
         .filter-btn {
             padding: 8px 16px;
@@ -229,7 +182,6 @@
             border-color: var(--primary);
         }
 
-        /* حاوية جدول البيانات */
         .table-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -241,10 +193,7 @@
             height: 620px;
         }
 
-        .table-responsive {
-            flex: 1;
-            overflow: auto;
-        }
+        .table-responsive { flex: 1; overflow: auto; }
 
         table {
             width: 100%;
@@ -253,11 +202,7 @@
             font-size: 0.88rem;
         }
 
-        thead {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
+        thead { position: sticky; top: 0; z-index: 10; }
 
         th {
             background: #f8fafc;
@@ -276,13 +221,8 @@
             color: var(--text-main);
         }
 
-        tbody tr {
-            transition: background 0.15s;
-        }
-
-        tbody tr:hover {
-            background-color: #f0fdfa;
-        }
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background-color: #f0fdfa; }
 
         .badge-status {
             padding: 4px 10px;
@@ -304,7 +244,6 @@
 <body>
 
 <div class="container">
-    <!-- الهيدر الفاخر -->
     <div class="header">
         <div class="brand-section">
             <div class="brand-icon">
@@ -322,7 +261,6 @@
         </div>
     </div>
 
-    <!-- بطاقات الإحصائيات -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
@@ -347,7 +285,6 @@
         </div>
     </div>
 
-    <!-- شريط البحث الفوري -->
     <div class="toolbar">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="بحث بالاسم، رقم السجل، أو اسم الشركة..." onkeyup="filterData()">
@@ -360,7 +297,6 @@
         </div>
     </div>
 
-    <!-- الجدول الاحترافي -->
     <div class="table-card">
         <div class="table-responsive">
             <table id="dataTable">
@@ -383,13 +319,40 @@
 let globalData = [];
 let currentFilter = 'all';
 
-// جلب بيانات الفيو المخصص تلقائياً
+// ============================================================
+// 🔒 قائمة الأعمدة المالية التي يجب إخفاؤها من الجدول
+// ============================================================
+function isSalaryColumn(colName) {
+    if (!colName) return false;
+    const name = String(colName).trim();
+    
+    // الكلمات المفتاحية للحقول المالية
+    const keywords = [
+        'راتب', 'رواتب', 'مرتب', 'مرتبات',
+        'salary', 'wages', 'wage',
+        'أجر', 'اجر', 'أجور', 'اجور',
+        'بدل', 'بدلات', 'allowance',
+        'مبلغ', 'مبالغ', 'amount',
+        'إجمالي', 'اجمالي',
+        'خصم', 'خصومات', 'deduction',
+        'مكافأة', 'مكافآت', 'bonus',
+        'تعويض', 'compensation',
+        'تأمين', 'تأمينات', 'insurance', 'gosi',
+        'ريال', 'sar'
+    ];
+    
+    const lower = name.toLowerCase();
+    return keywords.some(kw => lower.includes(kw));
+}
+
+// ============================================================
+// جلب بيانات الفيو
+// ============================================================
 async function loadViewData() {
     const refreshIcon = document.getElementById('refreshIcon');
     try {
         if (refreshIcon) refreshIcon.classList.add('fa-spin');
 
-        // جلب البيانات حصرياً للفيو المطلوبة
         const response = await fetch('/api/get-data?name=بحث_شامل_الشركات');
         const data = await response.json();
         
@@ -409,7 +372,9 @@ async function loadViewData() {
     }
 }
 
+// ============================================================
 // حساب وتحديث الإحصائيات العلوية
+// ============================================================
 function updateStatistics(data) {
     document.getElementById('totalRecords').textContent = data.length.toLocaleString();
 
@@ -417,7 +382,6 @@ function updateStatistics(data) {
     const companiesSet = new Set();
 
     data.forEach(row => {
-        // البحث عن أعمدة الراتب والشركة بمرونة
         const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary') || k.includes('إجمالي'));
         const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
 
@@ -433,7 +397,9 @@ function updateStatistics(data) {
     document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
 }
 
-// عرض ورسم الجدول
+// ============================================================
+// عرض ورسم الجدول (مع استبعاد الأعمدة المالية)
+// ============================================================
 function renderTable(data) {
     const theadTr = document.getElementById('tableHeaders');
     const tbody = document.getElementById('tableBody');
@@ -447,7 +413,14 @@ function renderTable(data) {
         return;
     }
 
-    const columns = Object.keys(data[0]);
+    // 🔒 استبعاد الأعمدة المالية من العرض
+    const columns = Object.keys(data[0]).filter(col => !isSalaryColumn(col));
+
+    if (columns.length === 0) {
+        theadTr.innerHTML = '<th>تنبيه</th>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد أعمدة للعرض.</td></tr>';
+        return;
+    }
 
     // إنشاء الترويسة
     columns.forEach(col => {
@@ -475,12 +448,12 @@ function populateRows(data, columns) {
             const td = document.createElement('td');
             let val = row[col];
 
-            // تنظيف عرض التواريخ لتكون مريحة
+            // تنظيف عرض التواريخ
             if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
                 val = val.split('T')[0];
             }
 
-            // تنسيق الحالات الوظيفية بألوان مميزة
+            // تنسيق الحالات الوظيفية
             if (col.includes('الحالة') && (val === 'موظف' || val === 'مستقيل')) {
                 const span = document.createElement('span');
                 span.className = `badge-status ${val === 'موظف' ? 'badge-active' : 'badge-resigned'}`;
@@ -496,17 +469,17 @@ function populateRows(data, columns) {
     });
 }
 
+// ============================================================
 // تصفية البيانات (بحث فوري + فلتر الحالة)
+// ============================================================
 function filterData() {
     const query = document.getElementById('searchInput').value.toLowerCase();
 
     const filtered = globalData.filter(row => {
-        // مطابقة البحث النصي
         const matchesSearch = Object.values(row).some(val => 
             String(val).toLowerCase().includes(query)
         );
 
-        // مطابقة فلتر الحالة الوظيفية إن وجد
         let matchesStatus = true;
         if (currentFilter !== 'all') {
             const statusVal = Object.values(row).find(val => String(val).trim() === currentFilter);
@@ -517,7 +490,8 @@ function filterData() {
     });
 
     if (globalData.length > 0) {
-        const columns = Object.keys(globalData[0]);
+        // 🔒 استبعاد الأعمدة المالية من العرض
+        const columns = Object.keys(globalData[0]).filter(col => !isSalaryColumn(col));
         populateRows(filtered, columns);
     }
 }
@@ -529,7 +503,9 @@ function setFilter(status, btnElement) {
     filterData();
 }
 
+// ============================================================
 // التحميل التلقائي عند فتح الصفحة
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     loadViewData();
 });
