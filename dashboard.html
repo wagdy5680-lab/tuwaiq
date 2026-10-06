@@ -49,7 +49,6 @@
             line-height: 1.6;
         }
 
-        /* خلفية زخرفية */
         body::before {
             content: '';
             position: fixed;
@@ -86,7 +85,6 @@
             z-index: 1;
         }
 
-        /* ===== الهيدر الفاخر ===== */
         .header {
             background: linear-gradient(135deg, #0f766e 0%, #134e4a 50%, #0c4a42 100%);
             color: white;
@@ -230,7 +228,6 @@
             color: white;
         }
 
-        /* ===== بطاقات الإحصائيات (تم تقليصها إلى بطاقتين رئيسيتين بعد إخفاء الرواتب) ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -325,7 +322,6 @@
             text-overflow: ellipsis;
         }
 
-        /* ===== لوحة إدارة الأعمدة ===== */
         .column-toggle-panel {
             background: linear-gradient(135deg, #ffffff, #f8fafc);
             border: 1px solid var(--border);
@@ -424,7 +420,6 @@
             color: var(--primary-dark);
         }
 
-        /* ===== شريط الأدوات ===== */
         .toolbar {
             background: var(--card-bg);
             padding: 16px 24px;
@@ -511,7 +506,6 @@
             box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
         }
 
-        /* ===== الجدول ===== */
         .table-card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -586,7 +580,6 @@
             background: linear-gradient(90deg, rgba(204, 251, 241, 0.4), rgba(204, 251, 241, 0.1));
         }
 
-        /* شارة الحالة */
         .badge-status {
             padding: 5px 12px;
             border-radius: 20px;
@@ -624,7 +617,6 @@
             box-shadow: 0 0 6px #dc2626;
         }
 
-        /* حالة فارغة */
         .empty-state {
             text-align: center;
             padding: 70px 30px;
@@ -646,7 +638,6 @@
             opacity: 0.5;
         }
 
-        /* نظام الإشعارات الخفيف (Toast) */
         .toast-container {
             position: fixed;
             bottom: 25px;
@@ -679,7 +670,6 @@
             to { opacity: 0; visibility: hidden; }
         }
 
-        /* شاشة التحميل */
         .loading-overlay {
             position: fixed;
             inset: 0;
@@ -708,7 +698,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* تنسيق خاص للطباعة و PDF عبر المتصفح */
         @media print {
             body {
                 background: white !important;
@@ -750,7 +739,6 @@
 <body>
 
 <div class="container">
-    <!-- الهيدر -->
     <div class="header">
         <div class="brand-section">
             <div class="brand-icon">
@@ -780,7 +768,6 @@
         </div>
     </div>
 
-    <!-- الإحصائيات (تم الاحتفاظ فقط بالسجلات والشركات وإخفاء الرواتب تماماً) -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
@@ -798,7 +785,6 @@
         </div>
     </div>
 
-    <!-- لوحة اختيار وإدارة الأعمدة -->
     <div class="column-toggle-panel" id="columnManagerPanel">
         <div class="panel-header-actions">
             <span><i class="fa-solid fa-sliders"></i> تخصيص وإظهار الأعمدة</span>
@@ -810,7 +796,6 @@
         <div class="column-checkboxes-grid" id="columnCheckboxes"></div>
     </div>
 
-    <!-- شريط الأدوات -->
     <div class="toolbar">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="بحث بالاسم، رقم السجل، أو اسم الشركة..." onkeyup="filterData()">
@@ -829,7 +814,6 @@
         </div>
     </div>
 
-    <!-- الجدول -->
     <div class="table-card">
         <div class="table-responsive">
             <table id="dataTable">
@@ -848,10 +832,8 @@
     </div>
 </div>
 
-<!-- حاوية الإشعارات -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- شاشة التحميل -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
 </div>
@@ -862,7 +844,6 @@ let allColumns = [];
 let hiddenColumns = new Set();
 let currentFilter = 'all';
 
-// عرض إشعار خفيف (Toast)
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -872,7 +853,6 @@ function showToast(message, type = 'success') {
     setTimeout(() => toast.remove(), 3000);
 }
 
-// جلب البيانات
 async function loadViewData() {
     const refreshIcon = document.getElementById('refreshIcon');
     const overlay = document.getElementById('loadingOverlay');
@@ -891,7 +871,6 @@ async function loadViewData() {
         globalData = data;
         if (data.length > 0) {
             allColumns = Object.keys(data[0]);
-            // إخفاء أعمدة الرواتب افتراضياً حرصاً على إخفائها تماماً
             allColumns.forEach(col => {
                 if (col.includes('الراتب') || col.includes('إجمالي') || col.includes('اجمالي') || col.includes('salary')) {
                     hiddenColumns.add(col);
@@ -912,7 +891,6 @@ async function loadViewData() {
     }
 }
 
-// تحديث الإحصائيات (بدون الرواتب)
 function updateStatistics(filteredData) {
     document.getElementById('totalRecords').textContent = filteredData.length.toLocaleString();
 
@@ -927,7 +905,6 @@ function updateStatistics(filteredData) {
     document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
 }
 
-// بناء لوحة الأعمدة
 function buildColumnManagerUI() {
     const container = document.getElementById('columnCheckboxes');
     container.innerHTML = '';
@@ -952,7 +929,6 @@ function buildColumnManagerUI() {
     });
 }
 
-// إظهار أو إخفاء كافة الأعمدة دفعة واحدة
 function toggleAllColumns(show) {
     if (show) {
         hiddenColumns.clear();
@@ -963,22 +939,12 @@ function toggleAllColumns(show) {
     filterData();
 }
 
-// فتح لوحة الأعمدة بكلمة سر مرنة
+// تم إزالة وإخفاء أي كلمات مرور أو شاشات دخول تماماً لضمان الأمان والانسيابية
 function toggleColumnManager() {
     const panel = document.getElementById('columnManagerPanel');
-    if (!panel.classList.contains('show')) {
-        const password = prompt('يرجى إدخال الرقم السري للوصول لإدارة الأعمدة:');
-        if (password === 'admin123456') {
-            panel.classList.add('show');
-        } else if (password !== null) {
-            showToast('الرقم السري غير صحيح!', 'error');
-        }
-    } else {
-        panel.classList.remove('show');
-    }
+    panel.classList.toggle('show');
 }
 
-// تصدير البيانات إلى Excel (CSV)
 function exportToCSV() {
     const filteredData = getFilteredData();
     if (filteredData.length === 0) {
@@ -1008,7 +974,6 @@ function exportToCSV() {
     showToast('تم تصدير ملف Excel بنجاح');
 }
 
-// استخراج PDF (يفتح نافذة الطباعة لاختيار حفظ كـ PDF مع الحفاظ على التنسيق والاتجاه)
 function exportToPDF() {
     showToast('جاري تحضير ملف PDF للطباعة والحفظ...');
     setTimeout(() => {
@@ -1016,12 +981,10 @@ function exportToPDF() {
     }, 600);
 }
 
-// طباعة الجدول مباشرة
 function printTable() {
     window.print();
 }
 
-// عرض الجدول
 function renderTable(data) {
     const theadTr = document.getElementById('tableHeaders');
     const tbody = document.getElementById('tableBody');
@@ -1075,7 +1038,6 @@ function renderTable(data) {
     });
 }
 
-// تصفية البيانات
 function getFilteredData() {
     const query = document.getElementById('searchInput').value.toLowerCase();
 
