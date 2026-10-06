@@ -53,7 +53,6 @@
         }
         .btn-action:hover { background: #f8fafc; }
         
-        /* شريط الأدوات والجدول */
         .toolbar {
             background: var(--card-bg); padding: 15px 25px; border-radius: 14px;
             box-shadow: var(--shadow); border: 1px solid var(--border);
@@ -68,15 +67,38 @@
         }
         .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
         
+        .selector-group { display: flex; align-items: center; gap: 10px; }
+        .selector-group select {
+            padding: 10px 15px; border: 1px solid var(--border); border-radius: 10px;
+            font-family: 'Cairo', sans-serif; font-size: 0.9rem; outline: none; background: #f8fafc; color: var(--text-main);
+        }
+
+        .column-selector-wrapper { position: relative; }
+        .column-menu {
+            display: none; position: absolute; left: 0; top: 110%;
+            background: white; border: 1px solid var(--border); border-radius: 10px;
+            box-shadow: var(--shadow); padding: 15px; z-index: 100; min-width: 220px; max-height: 250px; overflow-y: auto;
+        }
+        .column-menu p { font-weight: 700; margin-bottom: 10px; font-size: 0.85rem; color: var(--text-sub); }
+        .column-checkboxes { display: flex; flex-direction: column; gap: 8px; }
+        
         .table-card {
             background: var(--card-bg); border-radius: 16px;
             box-shadow: var(--shadow); border: 1px solid var(--border);
-            overflow: hidden; height: 580px; display: flex; flex-direction: column;
+            overflow: hidden; height: 600px; display: flex; flex-direction: column;
         }
         .table-responsive { flex: 1; overflow: auto; }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: 0.88rem; }
         thead { position: sticky; top: 0; z-index: 10; }
-        th { background: #f8fafc; color: var(--text-sub); font-weight: 700; padding: 15px 16px; text-align: right; border-bottom: 2px solid var(--border); }
+        th { background: #f8fafc; color: var(--text-sub); font-weight: 700; padding: 12px 16px; text-align: right; border-bottom: 2px solid var(--border); }
+        
+        th .column-filter {
+            margin-top: 6px; width: 100%; padding: 6px 10px; font-size: 0.8rem;
+            border: 1px solid var(--border); border-radius: 6px; outline: none;
+            font-family: 'Cairo', sans-serif; background: #ffffff;
+        }
+        th .column-filter:focus { border-color: var(--primary); }
+
         td { padding: 13px 16px; border-bottom: 1px solid var(--border); color: var(--text-main); }
         tbody tr:hover { background-color: #f0fdfa; }
         .empty-state { text-align: center; padding: 60px; color: var(--text-sub); font-size: 1.1rem; }
@@ -85,7 +107,7 @@
 <body>
 
     <div class="container">
-        <!-- الهيدر مع زر العودة للرئيسية -->
+        <!-- الهيدر -->
         <div class="header">
             <div class="brand-section">
                 <div class="brand-icon">
@@ -93,26 +115,42 @@
                 </div>
                 <div>
                     <h1>جمعية طويق لصناعة الكوادر البشرية</h1>
-                    <p>لوحة متابعة تقرير الشركات الشامل</p>
+                    <p>لوحة متابعة قاعدة البيانات الشاملة</p>
                 </div>
             </div>
             <div>
-                <!-- رابط العودة لصفحة البوابة index.php -->
-                <a href="index.php" class="btn-action">
+                <a href="/" class="btn-action">
                     <i class="fa-solid fa-house"></i> الرئيسية
                 </a>
             </div>
         </div>
 
-        <!-- شريط البحث -->
+        <!-- شريط الأدوات (اختيار الجدول، البحث العام، وتخصيص الأعمدة) -->
         <div class="toolbar">
+            <div class="selector-group">
+                <label for="tableSelect" style="font-weight: 700; font-size: 0.9rem;">الجدول / الفيو:</label>
+                <select id="tableSelect" onchange="changeTable()">
+                    <option value="بحث_شامل_الشركات">بحث_شامل_الشركات</option>
+                </select>
+            </div>
+
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="بحث سريع في السجلات..." onkeyup="filterData()">
+                <input type="text" id="searchInput" placeholder="بحث عام سريع في كل السجلات..." onkeyup="filterData()">
                 <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+
+            <div class="column-selector-wrapper">
+                <button onclick="toggleColumnMenu()" class="btn-action" style="background: #f8fafc; border: 1px solid var(--border); color: var(--text-main);">
+                    <i class="fa-solid fa-columns"></i> تخصيص الأعمدة
+                </button>
+                <div id="columnMenu" class="column-menu">
+                    <p>اختر الأعمدة للإظهار:</p>
+                    <div id="columnCheckboxes" class="column-checkboxes"></div>
+                </div>
             </div>
         </div>
 
-        <!-- جدول البيانات -->
+        <!-- الجدول -->
         <div class="table-card">
             <div class="table-responsive">
                 <table id="dataTable">
@@ -133,80 +171,198 @@
 
 <script>
 let globalData = [];
+let allColumns = [];
+let visibleColumns = new Set();
+let columnFilters = {};
 
-// جلب البيانات عند تحميل الصفحة
 window.addEventListener('DOMContentLoaded', () => {
-    loadViewData();
+    loadTablesList();
 });
 
-async function loadViewData() {
+// جلب قائمة الجداول والفيوز المتاحة في قاعدة البيانات لتعبئة القائمة المنسدلة
+async function loadTablesList() {
     try {
-        // يمكنك تغيير الEndpoint حسب مسار الـ API الخاص ببيانات الفيو لديك
-        const response = await fetch('/api/get-data?name=بحث_شامل_الشركات');
+        const response = await fetch('/api/tables');
+        const tables = await response.json();
+        const select = document.getElementById('tableSelect');
+        
+        if (response.ok && tables.length > 0) {
+            select.innerHTML = '';
+            tables.forEach(t => {
+                const tableName = t.table_name;
+                const option = document.createElement('option');
+                option.value = tableName;
+                option.textContent = `${tableName} (${t.table_type})`;
+                if (tableName === 'بحث_شامل_الشركات') {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+    } catch (e) {
+        console.warn('تعذر جلب قائمة الجداول، سيتم الاعتماد على الجدول الافتراضي', e);
+    }
+    loadViewData();
+}
+
+// جلب بيانات الجدول المختار مع ترميز الاسم ليدعم اللغة العربية على Vercel
+async function loadViewData() {
+    const tableName = document.getElementById('tableSelect').value || 'بحث_شامل_الشركات';
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="100" class="empty-state">جاري جلب البيانات...</td></tr>';
+    
+    try {
+        const encodedName = encodeURIComponent(tableName);
+        const response = await fetch(`/api/get-data?name=${encodedName}`);
         const data = await response.json();
         
-        if (!response.ok) throw new Error(data.error || 'فشل الجلب');
+        if (!response.ok) throw new Error(data.error || data.details || 'فشل الجلب');
 
         globalData = data;
+        columnFilters = {}; // تصفير الفلاتر عند تغيير الجدول
+        if (data.length > 0) {
+            allColumns = Object.keys(data[0]);
+            visibleColumns = new Set(allColumns);
+            buildColumnCheckboxes();
+        } else {
+            allColumns = [];
+            visibleColumns.clear();
+        }
         renderTable(data);
     } catch (error) {
         console.error('خطأ:', error);
-        document.getElementById('tableBody').innerHTML = `<tr><td colspan="100" class="empty-state" style="color:red;">خطأ في الاتصال: ${error.message}</td></tr>`;
+        document.getElementById('tableHeaders').innerHTML = '<th>خطأ</th>';
+        document.getElementById('tableBody').innerHTML = `<tr><td colspan="100" class="empty-state" style="color:red;">تعذر جلب البيانات: ${error.message}</td></tr>`;
     }
+}
+
+function changeTable() {
+    loadViewData();
 }
 
 function renderTable(data) {
     const theadTr = document.getElementById('tableHeaders');
-    const tbody = document.getElementById('tableBody');
-    
     theadTr.innerHTML = '';
-    tbody.innerHTML = '';
 
-    if (!data || data.length === 0) {
+    if (!allColumns.length) {
         theadTr.innerHTML = '<th>تنبيه</th>';
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد بيانات متاحة.</td></tr>';
+        document.getElementById('tableBody').innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد بيانات مطابقة أو الجدول فارغ.</td></tr>';
         return;
     }
 
-    const columns = Object.keys(data[0]);
-    columns.forEach(col => {
-        const th = document.createElement('th');
-        th.textContent = col;
-        theadTr.appendChild(th);
+    allColumns.forEach(col => {
+        if (visibleColumns.has(col)) {
+            const th = document.createElement('th');
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.textContent = col;
+            th.appendChild(titleDiv);
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'column-filter';
+            input.placeholder = `فلتر ${col}...`;
+            input.value = columnFilters[col] || '';
+            input.oninput = (e) => {
+                columnFilters[col] = e.target.value;
+                filterData();
+            };
+            th.appendChild(input);
+
+            theadTr.appendChild(th);
+        }
     });
 
-    populateRows(data, columns);
+    populateRows(data);
 }
 
-function populateRows(data, columns) {
+function buildColumnCheckboxes() {
+    const container = document.getElementById('columnCheckboxes');
+    container.innerHTML = '';
+    
+    allColumns.forEach(col => {
+        const label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '8px';
+        label.style.fontSize = '0.85rem';
+        label.style.cursor = 'pointer';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = visibleColumns.has(col);
+        checkbox.onchange = (e) => {
+            if (e.target.checked) {
+                visibleColumns.add(col);
+            } else {
+                visibleColumns.delete(col);
+            }
+            renderTable(globalData);
+        };
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(col));
+        container.appendChild(label);
+    });
+}
+
+function toggleColumnMenu() {
+    const menu = document.getElementById('columnMenu');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+function populateRows(data) {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
 
     if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة لخيارات البحث.</td></tr>';
         return;
     }
 
     data.forEach(row => {
         const tr = document.createElement('tr');
-        columns.forEach(col => {
-            const td = document.createElement('td');
-            td.textContent = row[col] !== null && row[col] !== undefined ? row[col] : '';
-            tr.appendChild(td);
+        allColumns.forEach(col => {
+            if (visibleColumns.has(col)) {
+                const td = document.createElement('td');
+                td.textContent = row[col] !== null && row[col] !== undefined ? row[col] : '';
+                tr.appendChild(td);
+            }
         });
         tbody.appendChild(tr);
     });
 }
 
 function filterData() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = globalData.filter(row => 
-        Object.values(row).some(val => String(val).toLowerCase().includes(query))
-    );
-    if (globalData.length > 0) {
-        populateRows(filtered, Object.keys(globalData[0]));
-    }
+    const generalQuery = document.getElementById('searchInput').value.toLowerCase();
+
+    const filtered = globalData.filter(row => {
+        const matchesGeneral = generalQuery === '' || Object.values(row).some(val => 
+            String(val).toLowerCase().includes(generalQuery)
+        );
+
+        if (!matchesGeneral) return false;
+
+        for (let col in columnFilters) {
+            const filterVal = columnFilters[col].toLowerCase();
+            if (filterVal !== '') {
+                const cellVal = String(row[col] !== null && row[col] !== undefined ? row[col] : '').toLowerCase();
+                if (!cellVal.includes(filterVal)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    });
+
+    populateRows(filtered);
 }
+
+window.addEventListener('click', function(e) {
+    if (!e.target.closest('.column-selector-wrapper')) {
+        document.getElementById('columnMenu').style.display = 'none';
+    }
+});
 </script>
 
 </body>
