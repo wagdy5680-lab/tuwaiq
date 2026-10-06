@@ -319,18 +319,6 @@
             transition: var(--transition);
         }
 
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(45, 212, 191, 0.05) 0%, transparent 60%);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
         .stat-card:hover {
             transform: translateY(-4px);
             box-shadow: var(--shadow-lg);
@@ -338,10 +326,6 @@
         }
 
         .stat-card:hover::before {
-            opacity: 1;
-        }
-
-        .stat-card:hover::after {
             opacity: 1;
         }
 
@@ -574,8 +558,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            position: relative;
-            overflow: hidden;
         }
 
         .filter-btn:hover {
@@ -644,10 +626,6 @@
             border: 2px solid var(--border-light);
         }
 
-        .table-responsive::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-darker);
-        }
-
         table {
             width: 100%;
             border-collapse: separate;
@@ -671,23 +649,7 @@
             border-bottom: 2px solid var(--primary);
             font-size: 0.85rem;
             letter-spacing: 0.2px;
-            position: relative;
             white-space: nowrap;
-        }
-
-        th::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            right: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.4s ease;
-        }
-
-        th:hover::after {
-            width: 100%;
         }
 
         td {
@@ -700,27 +662,10 @@
 
         tbody tr {
             transition: var(--transition-fast);
-            position: relative;
-        }
-
-        tbody tr::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--accent);
-            transform: scaleY(0);
-            transition: transform 0.2s ease;
         }
 
         tbody tr:hover {
             background: linear-gradient(90deg, rgba(204, 251, 241, 0.5), rgba(204, 251, 241, 0.1));
-        }
-
-        tbody tr:hover::before {
-            transform: scaleY(1);
         }
 
         tbody tr:hover td {
@@ -740,8 +685,6 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            letter-spacing: 0.2px;
-            transition: var(--transition);
         }
 
         .badge-status::before {
@@ -786,19 +729,6 @@
             color: var(--text-sub);
             font-size: 1.05rem;
             font-weight: 600;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .empty-state::before {
-            content: '\f15b';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            font-size: 3rem;
-            color: var(--accent);
-            opacity: 0.5;
         }
 
         /* ===== التحميل ===== */
@@ -833,7 +763,6 @@
             color: var(--primary-dark);
             font-weight: 700;
             font-size: 0.95rem;
-            letter-spacing: 0.5px;
         }
 
         @keyframes spin {
@@ -870,100 +799,35 @@
 
         .back-to-top:hover {
             transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 12px 28px rgba(13, 148, 136, 0.45);
         }
 
-        /* ===== الاستجابة ===== */
         @media (max-width: 768px) {
-            body {
-                padding: 14px;
-            }
-
-            .header {
-                padding: 22px 20px;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .header h1 {
-                font-size: 1.25rem;
-            }
-
-            .brand-icon {
-                width: 56px;
-                height: 56px;
-                font-size: 24px;
-            }
-
-            .header-actions {
-                width: 100%;
-                flex-direction: column;
-            }
-
-            .btn-action {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .toolbar {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 15px;
-            }
-
-            .search-box {
-                max-width: 100%;
-            }
-
-            .filter-status {
-                justify-content: center;
-            }
-
-            .table-card {
-                height: 500px;
-            }
-
-            th, td {
-                padding: 11px 12px;
-                font-size: 0.8rem;
-            }
-
-            .back-to-top {
-                bottom: 20px;
-                left: 20px;
-                width: 44px;
-                height: 44px;
-            }
-        }
-
-        @keyframes fadeInRow {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            body { padding: 14px; }
+            .header { padding: 22px 20px; flex-direction: column; align-items: flex-start; }
+            .header h1 { font-size: 1.25rem; }
+            .brand-icon { width: 56px; height: 56px; font-size: 24px; }
+            .header-actions { width: 100%; flex-direction: column; }
+            .btn-action { width: 100%; justify-content: center; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .toolbar { flex-direction: column; align-items: stretch; padding: 15px; }
+            .search-box { max-width: 100%; }
+            .filter-status { justify-content: center; }
+            .table-card { height: 500px; }
+            th, td { padding: 11px 12px; font-size: 0.8rem; }
         }
 
         tbody tr {
             animation: fadeInRow 0.3s ease forwards;
         }
 
+        @keyframes fadeInRow {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         ::selection {
             background: var(--accent);
             color: var(--primary-darker);
-        }
-
-        button:focus-visible,
-        input:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
         }
     </style>
 </head>
@@ -1023,8 +887,7 @@
     <!-- لوحة الأعمدة -->
     <div class="column-toggle-panel" id="columnManagerPanel">
         <span>إظهار / إخفاء الأعمدة</span>
-        <div id="columnCheckboxes" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;">
-        </div>
+        <div id="columnCheckboxes" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;"></div>
     </div>
 
     <!-- شريط الأدوات -->
@@ -1057,7 +920,7 @@
                 </thead>
                 <tbody id="tableBody">
                     <tr>
-                        <td colspan="100" class="empty-state">جاري الاتصال بقاعدة البيانات لجلب سجلات الفيو...</td>
+                        <td colspan="100" class="empty-state">جاري الاتصال بقاعدة البيانات...</td>
                     </tr>
                 </tbody>
             </table>
@@ -1065,36 +928,471 @@
     </div>
 </div>
 
-<!-- زر العودة للأعلى -->
-<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="العودة للأعلى">
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
     <i class="fa-solid fa-arrow-up"></i>
 </button>
 
-<!-- شاشة التحميل -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text">جاري تحميل البيانات...</div>
 </div>
 
 <script>
+// ============================================================
+// المتغيرات العامة
+// ============================================================
 let globalData = [];
 let allColumns = [];
 let hiddenColumns = new Set();
 let currentFilter = 'all';
 
 // ============================================================
-// قائمة سوداء صريحة: ضع هنا أسماء أي أعمدة مالية ظهرت عندك
+// قائمة سوداء صريحة: أضف هنا أي عمود مالي ظهر عندك
 // ============================================================
 const EXPLICIT_BLACKLIST = [
-    // أضف أسماء الأعمدة الدقيقة هنا إن ظهر أي عمود مالي
-    // مثال: 'الراتب الأساسي', 'إجمالي الراتب'
+    // أمثلة (احذف التعليق وأضف الأسماء الفعلية إن ظهرت):
+    // 'الراتب الأساسي',
+    // 'إجمالي الراتب',
+    // 'البدلات',
+    // 'خصم التأمينات',
 ];
 
 // ============================================================
-// دالة موسّعة لكشف أي عمود متعلق بالمرتبات أو المبالغ المالية
+// كشف الأعمدة المتعلقة بالمرتبات (بالاسم)
 // ============================================================
 function isSalaryRelatedColumn(colName) {
     if (!colName) return false;
     
-    const clean = String(colName).trim().toLowerCase();
+    const clean = String(colName).trim();
     
+    // 1) فحص القائمة السوداء الصريحة
+    if (EXPLICIT_BLACKLIST.some(bl => clean === bl)) {
+        return true;
+    }
+    
+    // 2) فحص الكلمات المفتاحية
+    const lower = clean.toLowerCase();
+    const keywords = [
+        'راتب', 'رواتب', 'مرتب', 'مرتبات',
+        'salary', 'salaries', 'wage', 'wages',
+        'أجر', 'اجر', 'أجور', 'اجور',
+        'pay', 'payment', 'allowance', 'بدل', 'بدلات',
+        'مبلغ', 'مبالغ', 'amount',
+        'إجمالي', 'اجمالي',
+        'خصم', 'خصومات', 'deduction',
+        'bonus', 'مكافأة', 'مكافآت',
+        'تعويض', 'compensation',
+        'insurance', 'تأمين', 'تأمينات',
+        'gosi', 'ريال', 'sar'
+    ];
+    
+    return keywords.some(kw => lower.includes(kw));
+}
+
+// ============================================================
+// كشف الأعمدة المالية بناءً على المحتوى (طبقة أمان إضافية)
+// ============================================================
+function detectFinancialColumnsFromData(data) {
+    const financialCols = new Set();
+    if (!data || data.length === 0) return financialCols;
+    
+    const columns = Object.keys(data[0]);
+    const sampleSize = Math.min(10, data.length);
+    
+    columns.forEach(col => {
+        // إذا تم اكتشافه بالاسم، أضفه وتابع
+        if (isSalaryRelatedColumn(col)) {
+            financialCols.add(col);
+            return;
+        }
+        
+        // استثناء الأعمدة المعرّفة (هوية، سجل، جوال، إلخ)
+        const lower = String(col).toLowerCase();
+        const isIdentifier = 
+            lower.includes('هوية') || lower.includes('سجل') ||
+            lower.includes('id') || lower.includes('رقم') ||
+            lower.includes('جوال') || lower.includes('هاتف') ||
+            lower.includes('phone') || lower.includes('mobile') ||
+            lower.includes('تاريخ') || lower.includes('date') ||
+            lower.includes('كود') || lower.includes('code');
+        
+        if (isIdentifier) return;
+        
+        // فحص القيم
+        let numericCount = 0;
+        let hasCurrencySymbol = false;
+        let hasLargeNumbers = false;
+        
+        for (let i = 0; i < sampleSize; i++) {
+            const val = data[i][col];
+            if (val === null || val === undefined || val === '') continue;
+            
+            const strVal = String(val);
+            if (strVal.includes('ر.س') || strVal.includes('SAR') || strVal.includes('ريال')) {
+                hasCurrencySymbol = true;
+            }
+            
+            const numVal = parseFloat(strVal.replace(/[^\d.-]/g, ''));
+            if (!isNaN(numVal)) {
+                numericCount++;
+                if (Math.abs(numVal) >= 1000) {
+                    hasLargeNumbers = true;
+                }
+            }
+        }
+        
+        const numericRatio = numericCount / sampleSize;
+        
+        // إذا كان فيه رمز عملة أو أرقام كبيرة + نسبة رقمية عالية
+        if (hasCurrencySymbol || (hasLargeNumbers && numericRatio > 0.5)) {
+            financialCols.add(col);
+            console.warn('🔒 [بالمحتوى] تم كشف عمود مالي:', col);
+        }
+    });
+    
+    return financialCols;
+}
+
+// ============================================================
+// تحميل البيانات من الـ API
+// ============================================================
+async function loadViewData() {
+    const refreshIcon = document.getElementById('refreshIcon');
+    const overlay = document.getElementById('loadingOverlay');
+    
+    try {
+        if (refreshIcon) refreshIcon.classList.add('fa-spin');
+        if (overlay) overlay.classList.add('show');
+
+        const response = await fetch('/api/get-data?name=بحث_شامل_الشركات');
+        
+        if (!response.ok) {
+            throw new Error('فشل الاتصال بالخادم - كود: ' + response.status);
+        }
+        
+        const data = await response.json();
+        
+        if (!Array.isArray(data)) {
+            throw new Error('البيانات المستلمة ليست مصفوفة');
+        }
+
+        globalData = data;
+        
+        // إعادة تعيين شاملة
+        hiddenColumns = new Set();
+        allColumns = [];
+        
+        if (data.length > 0) {
+            allColumns = Object.keys(data[0]);
+            
+            // المرحلة 1: الكشف بالاسم
+            allColumns.forEach(col => {
+                if (isSalaryRelatedColumn(col)) {
+                    hiddenColumns.add(col);
+                }
+            });
+            
+            // المرحلة 2: الكشف بالمحتوى
+            const contentDetected = detectFinancialColumnsFromData(data);
+            contentDetected.forEach(col => {
+                hiddenColumns.add(col);
+            });
+            
+            console.log('📋 إجمالي الأعمدة:', allColumns.length);
+            console.log('🙈 المخفية:', hiddenColumns.size);
+            console.log('👁️ الظاهرة:', allColumns.length - hiddenColumns.size);
+        }
+        
+        updateStatistics(data);
+        buildColumnManagerUI();
+        renderTable(data);
+
+    } catch (error) {
+        console.error('خطأ في التحميل:', error);
+        const tbody = document.getElementById('tableBody');
+        const thead = document.getElementById('tableHeaders');
+        thead.innerHTML = '<th>خطأ</th>';
+        tbody.innerHTML = `<tr><td colspan="100" class="empty-state">فشل تحميل البيانات: ${error.message}</td></tr>`;
+    } finally {
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+        if (overlay) overlay.classList.remove('show');
+    }
+}
+
+// ============================================================
+// تحديث الإحصائيات
+// ============================================================
+function updateStatistics(data) {
+    document.getElementById('totalRecords').textContent = data.length.toLocaleString();
+
+    const companiesSet = new Set();
+    data.forEach(row => {
+        const companyKey = Object.keys(row).find(k => 
+            k.includes('الشركة') || k.toLowerCase().includes('company')
+        );
+        if (companyKey && row[companyKey]) {
+            companiesSet.add(row[companyKey]);
+        }
+    });
+
+    document.getElementById('totalCompanies').textContent = companiesSet.size.toLocaleString();
+}
+
+// ============================================================
+// بناء لوحة تخصيص الأعمدة
+// ============================================================
+function buildColumnManagerUI() {
+    const container = document.getElementById('columnCheckboxes');
+    container.innerHTML = '';
+
+    allColumns.forEach(col => {
+        // استبعاد الأعمدة المالية من لوحة التحكم نهائياً
+        if (isSalaryRelatedColumn(col)) return;
+
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = !hiddenColumns.has(col);
+        checkbox.onchange = () => {
+            if (checkbox.checked) {
+                hiddenColumns.delete(col);
+            } else {
+                hiddenColumns.add(col);
+            }
+            renderTable(getFilteredData());
+        };
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(col));
+        container.appendChild(label);
+    });
+}
+
+// ============================================================
+// فتح لوحة تخصيص الأعمدة (محمية بكلمة سر)
+// ============================================================
+function toggleColumnManager() {
+    const password = prompt('يرجى إدخال الرقم السري للوصول لإدارة الأعمدة:');
+    
+    if (password === 'admin123456') {
+        const panel = document.getElementById('columnManagerPanel');
+        panel.classList.toggle('show');
+    } else if (password !== null) {
+        alert('الرقم السري غير صحيح!');
+    }
+}
+
+// ============================================================
+// عرض الجدول
+// ============================================================
+function renderTable(data) {
+    const theadTr = document.getElementById('tableHeaders');
+    const tbody = document.getElementById('tableBody');
+    
+    theadTr.innerHTML = '';
+    tbody.innerHTML = '';
+
+    if (!data || data.length === 0) {
+        theadTr.innerHTML = '<th>تنبيه</th>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد بيانات مطابقة حالياً.</td></tr>';
+        return;
+    }
+
+    // فلترة الأعمدة الظاهرة (استبعاد المخفية + المالية)
+    const visibleColumns = allColumns.filter(col => 
+        !hiddenColumns.has(col) && !isSalaryRelatedColumn(col)
+    );
+
+    if (visibleColumns.length === 0) {
+        theadTr.innerHTML = '<th>تنبيه</th>';
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">تم إخفاء كافة الأعمدة.</td></tr>';
+        return;
+    }
+
+    // بناء رؤوس الأعمدة
+    visibleColumns.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        theadTr.appendChild(th);
+    });
+
+    // تعبئة الصفوف
+    populateRows(data, visibleColumns);
+}
+
+function populateRows(data, visibleColumns) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة للبحث أو الفلتر الحالي.</td></tr>';
+        return;
+    }
+
+    data.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        tr.style.animationDelay = `${Math.min(index * 0.015, 0.4)}s`;
+        
+        visibleColumns.forEach(col => {
+            const td = document.createElement('td');
+            let val = row[col];
+
+            // تنظيف التواريخ
+            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
+                val = val.split('T')[0];
+            }
+
+            // شارات الحالة
+            if (col.includes('الحالة') && (val === 'موظف' || val === 'مستقيل')) {
+                const span = document.createElement('span');
+                span.className = `badge-status ${val === 'موظف' ? 'badge-active' : 'badge-resigned'}`;
+                span.textContent = val;
+                td.appendChild(span);
+            } else {
+                td.textContent = val !== null && val !== undefined ? val : '—';
+            }
+
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
+}
+
+// ============================================================
+// تصفية البيانات (بحث + فلتر الحالة)
+// ============================================================
+function getFilteredData() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+    return globalData.filter(row => {
+        // البحث النصي (مع تجاهل الأعمدة المالية)
+        const matchesSearch = query === '' || Object.entries(row).some(([key, val]) => {
+            if (isSalaryRelatedColumn(key)) return false;
+            return String(val).toLowerCase().includes(query);
+        });
+
+        // فلتر الحالة
+        let matchesStatus = true;
+        if (currentFilter !== 'all') {
+            const statusVal = Object.values(row).find(val => 
+                String(val).trim() === currentFilter
+            );
+            matchesStatus = !!statusVal;
+        }
+
+        return matchesSearch && matchesStatus;
+    });
+}
+
+function filterData() {
+    const filtered = getFilteredData();
+    const visibleColumns = allColumns.filter(col => 
+        !hiddenColumns.has(col) && !isSalaryRelatedColumn(col)
+    );
+    populateRows(filtered, visibleColumns);
+}
+
+function setFilter(status, btnElement) {
+    currentFilter = status;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+    filterData();
+}
+
+// ============================================================
+// تصدير Excel
+// ============================================================
+function exportToExcel() {
+    const filteredData = getFilteredData();
+    if (!filteredData || filteredData.length === 0) {
+        alert('لا توجد بيانات لتصديرها!');
+        return;
+    }
+
+    const visibleColumns = allColumns.filter(col => 
+        !hiddenColumns.has(col) && !isSalaryRelatedColumn(col)
+    );
+    
+    const excelData = filteredData.map(row => {
+        const cleanRow = {};
+        visibleColumns.forEach(col => {
+            let val = row[col];
+            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
+                val = val.split('T')[0];
+            }
+            cleanRow[col] = val !== null && val !== undefined ? val : '';
+        });
+        return cleanRow;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "تقرير الشركات");
+    XLSX.writeFile(workbook, "Tuwaiq_Companies_Report.xlsx");
+}
+
+// ============================================================
+// تصدير PDF
+// ============================================================
+function exportToPDF() {
+    const filteredData = getFilteredData();
+    if (!filteredData || filteredData.length === 0) {
+        alert('لا توجد بيانات لتصديرها!');
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4');
+
+    const visibleColumns = allColumns.filter(col => 
+        !hiddenColumns.has(col) && !isSalaryRelatedColumn(col)
+    );
+    
+    const tableHeaders = visibleColumns;
+    const tableRows = filteredData.map(row => {
+        return visibleColumns.map(col => {
+            let val = row[col];
+            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) {
+                val = val.split('T')[0];
+            }
+            return val !== null && val !== undefined ? String(val) : '';
+        });
+    });
+
+    doc.setFont("helvetica", "normal");
+    doc.text("Tuwaiq Association - Companies Comprehensive Report", 14, 15);
+
+    doc.autoTable({
+        head: [tableHeaders],
+        body: tableRows,
+        startY: 22,
+        styles: { font: 'helvetica', fontSize: 8, halign: 'right' },
+        headStyles: { fillColor: [13, 148, 136] },
+        theme: 'grid'
+    });
+
+    doc.save("Tuwaiq_Companies_Report.pdf");
+}
+
+// ============================================================
+// زر العودة للأعلى
+// ============================================================
+window.addEventListener('scroll', () => {
+    const btn = document.getElementById('backToTop');
+    if (window.scrollY > 300) {
+        btn.classList.add('show');
+    } else {
+        btn.classList.remove('show');
+    }
+});
+
+// ============================================================
+// تشغيل عند تحميل الصفحة
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadViewData();
+});
+</script>
+
+</body>
+</html>
