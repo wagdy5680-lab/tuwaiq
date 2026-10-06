@@ -3,367 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة مؤشرات الإدارة العليا - جمعية طويق</title>
+    <title>جمعية طويق لصناعة الكوادر البشرية - البوابة الرئيسية</title>
+    <!-- خط Cairo العصري -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #1e3a8a;
-            --bg-main: #f8fafc;
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --accent: #2dd4bf;
+            --bg-main: #f1f5f9;
             --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-sub: #475569;
-            --border: #cbd5e1;
-            --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-main);
-            padding: 30px 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
+            padding: 20px;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        .executive-header {
-            background: linear-gradient(135deg, #1e3a8a, #0f172a);
-            color: white;
-            padding: 30px 40px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .executive-title h1 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .executive-title p {
-            font-size: 0.95rem;
-            opacity: 0.8;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-action {
-            background: rgba(255, 255, 255, 0.12);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .btn-action:hover { background: rgba(255, 255, 255, 0.25); }
-        .btn-logout { background: #dc2626; border-color: #dc2626; }
-        .btn-logout:hover { background: #b91c1c; }
-
-        .kpi-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .kpi-card {
+        .welcome-card {
             background: var(--card-bg);
-            padding: 24px;
-            border-radius: 14px;
+            max-width: 550px;
+            width: 100%;
+            padding: 40px 30px;
+            border-radius: 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            text-align: center;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
+            flex-direction: column;
+            gap: 25px;
         }
 
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0;
-            width: 5px;
-            height: 100%;
-            background: var(--primary);
-        }
-
-        .kpi-info span { font-size: 0.88rem; color: var(--text-sub); font-weight: 600; }
-        .kpi-info h2 { font-size: 1.8rem; font-weight: 900; color: var(--text-main); margin-top: 5px; }
-
-        .kpi-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 14px;
-            background: #eff6ff;
-            color: var(--primary);
+        .brand-icon-large {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #0f766e, #134e4a);
+            color: white;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
+            font-size: 38px;
+            margin: 0 auto;
+            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2);
         }
 
-        .executive-toolbar {
-            background: var(--card-bg);
-            padding: 18px 25px;
-            border-radius: 14px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+        .welcome-header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
         }
 
-        .search-box {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 18px 12px 45px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
+        .welcome-header p {
             font-size: 0.95rem;
-            outline: none;
-            font-family: 'Cairo', sans-serif;
-            background: #f8fafc;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
             color: var(--text-sub);
+            line-height: 1.6;
         }
 
-        .executive-table-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: var(--shadow);
+        .features-list {
+            display: flex;
+            justify-content: space-around;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            overflow: hidden;
         }
 
-        .table-responsive { max-height: 580px; overflow: auto; }
+        .feature-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
 
-        table { width: 100%; border-collapse: collapse; white-space: nowrap; font-size: 0.9rem; }
-        thead { position: sticky; top: 0; z-index: 10; }
-        th { background: #1e293b; color: #ffffff; font-weight: 700; padding: 16px 20px; text-align: right; }
-        td { padding: 14px 20px; border-bottom: 1px solid #f1f5f9; color: var(--text-main); }
-        tbody tr:hover { background-color: #f1f5f9; }
+        .feature-item i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
 
-        .badge-status { padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
-        .badge-active { background: #dcfce7; color: #166534; }
-        .badge-resigned { background: #fee2e2; color: #991b1b; }
-        .empty-state { text-align: center; padding: 50px; color: var(--text-sub); font-size: 1.1rem; }
+        .btn-dashboard {
+            background: linear-gradient(135deg, #0f766e, #134e4a);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-dashboard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(15, 118, 110, 0.35);
+            background: linear-gradient(135deg, #115e59, #0f766e);
+        }
+
+        .footer-note {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
 
-<script>
-    // التحقق من الحماية: إذا لم يتم تسجيل الدخول، أعده لصفحة اللوجن
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-        window.location.href = 'index.html';
-    }
-</script>
-
-<div class="container">
-    <div class="executive-header">
-        <div class="executive-title">
-            <h1>لوحة مؤشرات الإدارة العليا</h1>
-            <p>تقرير تنفيذي شامل مبني على الفيو (بحث_شامل_الشركات)</p>
+    <div class="welcome-card">
+        <div class="brand-icon-large">
+            <i class="fa-solid fa-building-shield"></i>
         </div>
-        <div class="header-actions">
-            <button class="btn-action" onclick="loadManagerData()">
-                <i class="fa-solid fa-rotate-right" id="refreshIcon"></i> تحديث
-            </button>
-            <button class="btn-action btn-logout" onclick="logout()">
-                <i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج
-            </button>
-        </div>
-    </div>
-
-    <div class="kpi-container">
-        <div class="kpi-card">
-            <div class="kpi-info">
-                <span>إجمالي الكوادر المسجلة</span>
-                <h2 id="kpiTotalRecords">0</h2>
-            </div>
-            <div class="kpi-icon"><i class="fa-solid fa-users-line"></i></div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-info">
-                <span>إجمالي الرواتب الشهرية</span>
-                <h2 id="kpiTotalSalary">0 ر.س</h2>
-            </div>
-            <div class="kpi-icon"><i class="fa-solid fa-wallet"></i></div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-info">
-                <span>الشركات التابعة النشطة</span>
-                <h2 id="kpiCompanies">0</h2>
-            </div>
-            <div class="kpi-icon"><i class="fa-solid fa-building-columns"></i></div>
-        </div>
-    </div>
-
-    <div class="executive-toolbar">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="بحث سريع باسم الموظف أو اسم الشركة..." onkeyup="filterManagerTable()">
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
-    </div>
-
-    <div class="executive-table-card">
-        <div class="table-responsive">
-            <table id="managerTable">
-                <thead>
-                    <tr id="tableHeaders">
-                        <th>جاري التحميل...</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td colspan="100" class="empty-state">جاري استدعاء البيانات وتجهيز التقارير...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<script>
-let globalData = [];
-
-async function loadManagerData() {
-    const refreshIcon = document.getElementById('refreshIcon');
-    try {
-        if (refreshIcon) refreshIcon.classList.add('fa-spin');
-        const response = await fetch('/api/get-data?name=بحث_شامل_الشركات');
-        const data = await response.json();
         
-        if (!response.ok) throw new Error(data.details || data.error || 'فشل جلب البيانات');
+        <div class="welcome-header">
+            <h1>جمعية طويق لصناعة الكوادر البشرية</h1>
+            <p>نظام متابعة تقارير الشركات الشامل وإدارة البيانات الوظيفية بكفاءة عالية</p>
+        </div>
 
-        globalData = data;
-        updateExecutiveKPIs(data);
-        renderManagerTable(data);
-    } catch (error) {
-        console.error('خطأ:', error);
-        alert('تعذر تحميل بيانات الإدارة: ' + error.message);
-    } finally {
-        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
-    }
-}
+        <div class="features-list">
+            <div class="feature-item">
+                <i class="fa-solid fa-database"></i>
+                <span>قواعد البيانات</span>
+            </div>
+            <div class="feature-item">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>إحصائيات فورية</span>
+            </div>
+            <div class="feature-item">
+                <i class="fa-solid fa-bolt"></i>
+                <span>بحث سريع</span>
+            </div>
+        </div>
 
-function updateExecutiveKPIs(data) {
-    document.getElementById('kpiTotalRecords').textContent = data.length.toLocaleString();
-    let totalSalaries = 0;
-    const companiesSet = new Set();
+        <!-- زر الانتقال للوحة التحكم (Dashboard) مع الأيقونة المطلوبة -->
+        <a href="dashboard.html" class="btn-dashboard">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            <span>الانتقال إلى لوحة التحكم (Dashboard)</span>
+        </a>
 
-    data.forEach(row => {
-        const salaryKey = Object.keys(row).find(k => k.includes('الراتب') || k.includes('salary'));
-        const companyKey = Object.keys(row).find(k => k.includes('الشركة') || k.includes('company'));
-        if (salaryKey && !isNaN(parseFloat(row[salaryKey]))) totalSalaries += parseFloat(row[salaryKey]);
-        if (companyKey && row[companyKey]) companiesSet.add(row[companyKey]);
-    });
-
-    document.getElementById('kpiTotalSalary').textContent = totalSalaries.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ر.س';
-    document.getElementById('kpiCompanies').textContent = companiesSet.size.toLocaleString();
-}
-
-function renderManagerTable(data) {
-    const theadTr = document.getElementById('tableHeaders');
-    const tbody = document.getElementById('tableBody');
-    theadTr.innerHTML = '';
-    tbody.innerHTML = '';
-
-    if (!data || data.length === 0) {
-        theadTr.innerHTML = '<th>تنبيه</th>';
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد سجلات متاحة حالياً.</td></tr>';
-        return;
-    }
-
-    const columns = Object.keys(data[0]);
-    columns.forEach(col => {
-        const th = document.createElement('th');
-        th.textContent = col;
-        theadTr.appendChild(th);
-    });
-
-    populateTableRows(data, columns);
-}
-
-function populateTableRows(data, columns) {
-    const tbody = document.getElementById('tableBody');
-    tbody.innerHTML = '';
-
-    if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="100" class="empty-state">لا توجد نتائج مطابقة لعملية البحث.</td></tr>';
-        return;
-    }
-
-    data.forEach(row => {
-        const tr = document.createElement('tr');
-        columns.forEach(col => {
-            const td = document.createElement('td');
-            let val = row[col];
-            if (typeof val === 'string' && val.includes('T') && val.includes('Z')) val = val.split('T')[0];
-
-            if (col.includes('الحالة') && (val === 'موظف' || val === 'مستقيل')) {
-                const span = document.createElement('span');
-                span.className = `badge-status ${val === 'موظف' ? 'badge-active' : 'badge-resigned'}`;
-                span.textContent = val;
-                td.appendChild(span);
-            } else {
-                td.textContent = val !== null && val !== undefined ? val : '';
-            }
-            tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-    });
-}
-
-function filterManagerTable() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const filtered = globalData.filter(row => Object.values(row).some(val => String(val).toLowerCase().includes(query)));
-    if (globalData.length > 0) {
-        const columns = Object.keys(globalData[0]);
-        populateTableRows(filtered, columns);
-    }
-}
-
-function logout() {
-    localStorage.removeItem('isLoggedIn');
-    window.location.href = 'index.html';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadManagerData();
-});
-</script>
+        <div class="footer-note">
+            جميع الحقوق محفوظة © جمعية طويق لصناعة الكوادر البشرية 2026
+        </div>
+    </div>
 
 </body>
 </html>
